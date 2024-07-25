@@ -44,17 +44,17 @@ const Footer: React.FC = () => {
         "Support",
       ],
     },
-    {
-      title: "Social",
-      links: [
-        "Twitter",
-        "LinkedIn",
-        "Facebook",
-        "GitHub",
-        "AngelList",
-        "Dribbble",
-      ],
-    },
+    // {
+    //   title: "Social",
+    //   links: [
+    //     "Twitter",
+    //     "LinkedIn",
+    //     "Facebook",
+    //     "GitHub",
+    //     "AngelList",
+    //     "Dribbble",
+    //   ],
+    // },
     {
       title: "Legal",
       links: ["Terms", "Privacy", "Cookies", "Licenses", "Settings", "Contact"],
@@ -83,7 +83,7 @@ const Footer: React.FC = () => {
                 className="max-w-full aspect-[1.49] w-[268px]"
               />
               <p className="mt-6">
-                "The journey of a thousand miles begins with a single step. "
+                "The journey of a thousand miles begins with a single step." <span className="text-blue ">Lao Tzuyou</span>
               </p>
             </div>
           </div>
