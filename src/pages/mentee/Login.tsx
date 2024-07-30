@@ -1,14 +1,13 @@
 import React from 'react'
 
 //components
-import Navbar from '../../components/common/Navbar'
 import LoginForm from '../../components/mentee/LoginForm'
 import Footer from '../../components/common/Footer'
 
 const Login: React.FC = () => {
     return (
         <div className="flex flex-col bg-white">
-          <Navbar />
+
           <main className="flex justify-center items-center px-16 py-20 w-full bg-zinc-900 max-md:px-5 max-md:max-w-full">
             <div className="mt-20 mb-28 w-full max-w-[1078px] max-md:my-10 max-md:max-w-full">
               <div className="flex gap-5 max-md:flex-col">

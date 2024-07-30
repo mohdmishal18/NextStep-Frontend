@@ -1,4 +1,4 @@
-import Navbar from "../../components/common/Navbar";
+
 import Footer from "../../components/common/Footer";
 import SignUpForm from "../../components/mentee/SignupForm";
 
@@ -6,7 +6,6 @@ const SignUp = () => {
   return (
     <div className="flex flex-col bg-white">
       <div className="flex flex-col pb-20 w-full bg-zinc-900 max-md:max-w-full">
-        <Navbar />
         <main className="self-center mt-16 mb-8 w-full max-w-[1153px] max-md:mt-10 max-md:max-w-full">
           <div className="flex gap-5 max-md:flex-col">
             <div className="flex flex-col w-6/12 max-md:ml-0 max-md:w-full">

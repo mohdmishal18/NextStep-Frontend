@@ -14,7 +14,8 @@ export const menteeSignup = async (menteeData: signUpData) => {
         return res
     }
     catch(err) {
-        console.log(err);
+        console.log(err, "error from api");
+        throw err
     }
     
 }

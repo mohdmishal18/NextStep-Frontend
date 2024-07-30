@@ -1,7 +1,6 @@
 const menteeRoutes = {
     Signup: '/mentee/signup',
     Signin: '/login',
-
 }
 
 

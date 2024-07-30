@@ -1,28 +1,77 @@
+import { RiEyeCloseFill } from "react-icons/ri";
+import { toast } from 'react-toastify';
+import { FaEye } from "react-icons/fa6";
+import { useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import axios from "axios";
 
-// import { inputProps } from "../../Types/utils";
-
+import { menteeSignup } from "../../api/mentee";
 import SignupInputField from "../common/SignupInputField";
-// const InputField: React.FC<inputProps> = ({
-//   label,
-//   placeholder,
-//   type = "text",
-// }) => (
-//   <>
-//     <label className="mt-3.5 text-xs text-zinc-200 max-md:max-w-full">
-//       {label}
-//     </label>
-//     <input
-//       type={type}
-//       placeholder={placeholder}
-//       className="px-6 py-3 mt-2.5 border border-solid border-slate-700 leading-[162.5%] rounded-[35px]  text-white bg-primary max-md:px-5 max-md:max-w-full w-full"
-//     />
-//   </>
-// );
+import { signUpData } from "../../Types/menteeTypes";
 
 const SignUpForm = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  // const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<signUpData>();
+
+  const password = watch("password");
+
+  const validateConfirmPassword = (
+    value: string | undefined
+  ): true | string => {
+    if (!value) return "Password confirmation is required";
+    // Assuming you have `password` available in the scope
+    if (value !== password) return "Passwords do not match";
+    return true;
+  };
+
+  const validateMobileNumber = (value: string | undefined): true | string => {
+    if (!value) return "Mobile number is required";
+    const phoneNumber = parseInt(value, 10);
+    if (isNaN(phoneNumber)) return "Mobile number must be numeric";
+    if (value.length !== 10) return "Mobile number must be exactly 10 digits";
+    return true;
+  };
+
+  const onSubmit: SubmitHandler<signUpData> = async (data: signUpData) => {
+    try {
+        // Perform the signup operation
+        const response = await menteeSignup(data);
+
+        // Handle successful signup response
+        console.log(response, "this is the response from the backend");
+        if (response.data.message === "User created and OTP sent successfully" && response.data.status) {
+            localStorage.setItem("otpTimer", "60");
+            // Navigate to the OTP verification page or handle success as needed
+            // navigate('/verifyOtp'); // Uncomment if you're using react-router-dom
+        }
+    } catch (error) {
+        // Handle errors
+        if (axios.isAxiosError(error)) {
+            // Extract and display the error message
+            const errorMessage = error.response?.data?.error?.message || "An unexpected error occurred";
+            toast.error(errorMessage);
+        } else {
+            // Handle any other errors that might not be Axios errors
+            toast.error("An unexpected error occurred");
+        }
+    }
+};
+
 
   return (
-    <form className="flex flex-col grow px-5 text-base leading-6 max-md:mt-10 max-md:max-w-full mt-10">
+    <form
+      className="flex flex-col grow px-5 text-base leading-6 max-md:mt-10 max-md:max-w-full mt-10"
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <h1 className="flex gap-5 text-5xl font-medium tracking-tighter leading-[62px] max-md:flex-wrap max-md:text-4xl">
         <span className="grow text-white max-md:text-4xl">Login to your</span>
         <span className="flex-auto text-blue max-md:text-4xl">Next Step!</span>
@@ -38,28 +87,85 @@ const SignUpForm = () => {
           <span className="text-white">Sign in with Google</span>
         </div>
       </button>
-      <SignupInputField label="First & Last Name" placeholder="i.e. Davon Lean" />
+      {/* {errorMessage && (
+        <div className="text-red-500 mb-4">
+          {errorMessage}
+        </div>
+      )} */}
+      <SignupInputField
+        label="First & Last Name"
+        placeholder="i.e. Davon Lean"
+        register={register("name", { required: "Name is required" })}
+        error={errors.name}
+        onChange={(e) => setValue("name", e.target.value.trim())}
+      />
       <SignupInputField
         label="Email Address"
         placeholder="i.e. davon@mail.com"
         type="email"
+        register={register("email", {
+          required: "Email is required",
+          pattern: {
+            value: /^[^@]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            message: "Enter a valid email address",
+          },
+        })}
+        error={errors.email}
+        onChange={(e) => setValue("email", e.target.value.trim())}
       />
-      <SignupInputField label="Mobile" placeholder="9947865508" type="tel" />
-      <SignupInputField label="Password" placeholder="**********" type="password" />
-      <SignupInputField
-        label="Confirm Password"
-        placeholder="**********"
-        type="password"
+       <SignupInputField
+        label="Mobile"
+        placeholder="9947865508"
+        type="tel"
+        register={register("phone", {
+          required: "Mobile number is required",
+          validate: validateMobileNumber,
+        })}
+        error={errors.phone}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue("phone", e.target.value.trim())}
       />
+      <div className="relative">
+        <SignupInputField
+          label="Password"
+          placeholder="**********"
+          type={showPassword ? "text" : "password"}
+          register={register("password", {
+            required: "Password is required",
+            minLength: {
+              value: 8,
+              message: "Password must be at least 8 characters",
+            },
+          })}
+          error={errors.password}
+        />
+        <div
+          className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+          onClick={() => setShowPassword(!showPassword)}
+        >
+          {showPassword ? <FaEye /> : <RiEyeCloseFill />}
+        </div>
+      </div>
+      <div className="relative">
+        <SignupInputField
+          label="Confirm Password"
+          placeholder="**********"
+          type={showConfirmPassword ? "text" : "password"}
+          register={register("confirmPassword", {
+            required: "Confirm password is required",
+            validate: validateConfirmPassword,
+          })}
+          error={errors.confirmPassword}
+        />
+        <div
+          className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+        >
+          {showConfirmPassword ? <FaEye /> : <RiEyeCloseFill />}
+        </div>
+      </div>
       <button className="flex justify-center items-center px-4 py-2.5 mt-5 max-w-full font-semibold tracking-normal leading-7 text-center text-white whitespace-nowrap bg-blue rounded-[50px] w-[207px] max-md:px-5">
         <div className="flex gap-2.5 justify-center">
-          <span>Next</span>
-          <img
-            loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/5124122de3351c22701703bff9f8f999e60c7f0169cd7cc189ab119457c0bf4c?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be"
-            alt=""
-            className="shrink-0 my-auto aspect-square w-[18px]"
-          />
+          Next
         </div>
       </button>
       <p className="mt-5 text-sm text-blue max-md:max-w-full">
