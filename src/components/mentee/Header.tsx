@@ -15,7 +15,7 @@ const Header: React.FC = () => {
         <div className="flex flex-col justify-center self-stretch px-4 py-3 max-md:pr-5">
           <div className="flex gap-3">
             <div className="flex overflow-hidden relative flex-col justify-end items-start px-7 pt-7 w-10 aspect-square rounded-[200px]">
-              <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/5974880022bd3d3da9163f0daf5e9fe0a6fabea577fb82f8d2eba7052b34ff66?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be" alt="" className="object-cover absolute inset-0 size-full" />
+              <img loading="lazy" src="/sampleProfile.jpg" alt="" className="object-cover absolute inset-0 size-full" />
               <div className="relative shrink-0 bg-emerald-500 rounded-md border-2 border-white border-solid h-[11px]" />
             </div>
             <div className="flex flex-col flex-1 text-sm text-sky-50">

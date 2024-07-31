@@ -19,3 +19,12 @@ export const menteeSignup = async (menteeData: signUpData) => {
     }
     
 }
+
+export const verifyOtp = async (otp: number) => {
+    try {
+      return await API.post(menteeRoutes.verifyOtp, { otp });
+    } catch (error) {
+      const err: Error = error as Error;
+      throw err; // Re-throw the error after handling it
+    }
+};

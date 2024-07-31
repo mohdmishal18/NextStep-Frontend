@@ -6,6 +6,7 @@ import SignUp from "../pages/mentee/SignUp";
 import Profile from "../pages/mentee/ProfilePage";
 import MentorApplyPage from "../pages/mentor/MentorApplyPage";
 import OtpPage from "../pages/mentee/OtpPage";
+import HomePage from "../pages/common/HomePage";
 
 import Navbar from "../components/common/Navbar";
 import { Outlet } from "react-router-dom";
@@ -21,6 +22,7 @@ const MenteeRoutes = () => {
   return (
     <Routes>
       <Route element={<AuthLayout />}>
+      <Route path="" element={<HomePage/>}/>
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<SignUp />} />
         <Route path="mentorApply" element={<MentorApplyPage/>}/>

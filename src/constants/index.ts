@@ -1,6 +1,6 @@
 export const navLinks: {id: string, title: string}[]  = [
     {
-        id: "home",
+        id: "",
         title: "Home"
     },
     {

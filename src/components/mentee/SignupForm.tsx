@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { RiEyeCloseFill } from "react-icons/ri";
 import { toast } from 'react-toastify';
 import { FaEye } from "react-icons/fa6";
@@ -13,6 +14,8 @@ const SignUpForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   // const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   const {
     register,
@@ -50,8 +53,7 @@ const SignUpForm = () => {
         console.log(response, "this is the response from the backend");
         if (response.data.message === "User created and OTP sent successfully" && response.data.status) {
             localStorage.setItem("otpTimer", "60");
-            // Navigate to the OTP verification page or handle success as needed
-            // navigate('/verifyOtp'); // Uncomment if you're using react-router-dom
+            navigate('/verifyOtp');
         }
     } catch (error) {
         // Handle errors
@@ -125,7 +127,7 @@ const SignUpForm = () => {
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue("phone", e.target.value.trim())}
       />
       <div className="relative">
-        <SignupInputField
+      <SignupInputField
           label="Password"
           placeholder="**********"
           type={showPassword ? "text" : "password"}
@@ -134,6 +136,10 @@ const SignUpForm = () => {
             minLength: {
               value: 8,
               message: "Password must be at least 8 characters",
+            },
+            pattern: {
+              value: /^(?=.*[A-Z])(?=.*[!@#$%^&*])/,
+              message: "Password must contain at least one uppercase letter and one special character",
             },
           })}
           error={errors.password}
