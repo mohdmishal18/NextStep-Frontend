@@ -20,9 +20,9 @@ export const menteeSignup = async (menteeData: signUpData) => {
     
 }
 
-export const verifyOtp = async (otp: number) => {
+export const verifyOtp = async (otp: number, email: string) => {
     try {
-      return await API.post(menteeRoutes.verifyOtp, { otp });
+      return await API.post(menteeRoutes.verifyOtp, { otp,email });
     } catch (error) {
       const err: Error = error as Error;
       throw err; // Re-throw the error after handling it

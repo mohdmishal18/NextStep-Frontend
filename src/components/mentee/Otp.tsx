@@ -1,11 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { menteeLogin } from "../../store/slices/menteeAuthSlice";
 import axios from "axios";
+import { useSelector } from "react-redux";
+
+import { RootState } from "../../store/store";
+import { menteeLogin } from "../../store/slices/menteeAuthSlice";
 import { verifyOtp } from "../../api/mentee";
 
 const Otp: React.FC = () => {
+
+  const email = useSelector((state: RootState) => state.mentee.otpEmail);
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -96,7 +101,8 @@ const Otp: React.FC = () => {
         value += val;
       });
 
-      let response = await verifyOtp(Number(value));
+      let response = await verifyOtp(Number(value), email);
+      console.log("res from otp varificaiton ,", response)
 
       if (response.data.message === "OTP verified successfully") {
         dispatch(menteeLogin(response.data.user));
@@ -120,7 +126,7 @@ const Otp: React.FC = () => {
           </h1>
           <p className="mt-6 text-xl leading-6 text-sky-50">
             Enter the 6-digit code that we have sent via the
-            email <span className="text-blue font-semibold">mohdmishal18@gmail.com</span>
+            email <span className="text-blue font-semibold">{email}</span>
           </p>
           <form onSubmit={(e) => handleSubmit(e)}>
           <div className="flex gap-4 pr-7 mt-8 text-base leading-4 whitespace-nowrap text-neutral-950 max-md:pr-5">
