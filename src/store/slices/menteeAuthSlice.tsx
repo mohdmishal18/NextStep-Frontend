@@ -16,13 +16,11 @@ interface Mentee {
 export interface MenteeState {
   menteeLogin: boolean;
   menteeData: Mentee | null;
-  otpEmail: string;
 }
 
 const initialState:MenteeState = {
   menteeLogin : false,
   menteeData : null,
-  otpEmail: ''
 }
 
 const menteeSlice = createSlice({
@@ -37,13 +35,9 @@ const menteeSlice = createSlice({
     menteeLogout : (state)=> {
       state.menteeLogin = false
     },
-
-    setOtpEmail: (state, action: PayloadAction<string>) => {
-      state.otpEmail = action.payload;
-    },
   }
 })
 
 
-export const { menteeLogin , menteeLogout , setOtpEmail } = menteeSlice.actions
+export const { menteeLogin , menteeLogout } = menteeSlice.actions
 export default menteeSlice.reducer

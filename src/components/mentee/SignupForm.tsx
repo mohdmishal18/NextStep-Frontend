@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { RiEyeCloseFill } from "react-icons/ri";
 import { FaEye } from "react-icons/fa";
 import axios from "axios";
 
 // Redux
-import { setOtpEmail } from "../../store/slices/menteeAuthSlice";
 import { menteeSignup } from "../../api/mentee";
 import SignupInputField from "../common/SignupInputField";
 import { signUpData } from "../../Types/menteeTypes";
@@ -18,7 +16,6 @@ const SignUpForm = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const {
     register,
@@ -49,7 +46,7 @@ const SignUpForm = () => {
       const response = await menteeSignup(data);
       if (response.data.message === "User created and OTP sent successfully" && response.data.status) {
         localStorage.setItem("otpTimer", "60");
-        dispatch(setOtpEmail(response.data.email));
+        localStorage.setItem('otpEmail', response.data.email)
         navigate('/verifyOtp');
       }
     } catch (error) {
