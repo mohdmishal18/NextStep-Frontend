@@ -78,7 +78,7 @@ const Otp: React.FC = () => {
   const handleResendOtp = async () => {
     try {
       const response = await resendOtp(email as string);
-      if (response.status) {
+      if (response?.status) {
         setTimer(60);
         localStorage.setItem("otpTimer", "60");
       }
@@ -110,7 +110,7 @@ const Otp: React.FC = () => {
       let response = await verifyOtp(Number(value), email as string);
       console.log("res from otp varificaiton ,", response);
 
-      if (response.data.message === "OTP verified successfully") {
+      if (response?.data.OtpVerfication === "OTP verified successfully") {
         dispatch(menteeLogin(response.data.user));
         navigate("/profile");
         localStorage.removeItem('otpEmail')

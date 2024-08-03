@@ -4,12 +4,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import './App.css'
 
 //routes
-import MenteeRoutes from './routes/MenteeRoutes'
+import AuthRoutes from './routes/authRoutes';
 
 const App = () => {
   const router = createBrowserRouter([
 
-    {path: "/*",element: <MenteeRoutes/>}
+    {path: "/*",element: <AuthRoutes/>}
 
   ])
   return (

@@ -1,5 +1,5 @@
 import API from "../service/axios";
-
+import errorHandle from "./errorHandling";
 //Endpoints
 import menteeRoutes from "../service/endPoints/menteeEndpoint";
 
@@ -22,7 +22,7 @@ export const verifyOtp = async (otp: number, email: string) => {
     return await API.post(menteeRoutes.verifyOtp, { otp, email });
   } catch (error) {
     const err: Error = error as Error;
-    throw err;
+    errorHandle(err);
   }
 };
 
@@ -32,7 +32,6 @@ export const resendOtp = async (email: string) => {
     return await API.post(menteeRoutes.resendOtp, {email});
   } catch (error) {
     const err: Error = error as Error;
-    console.log(err);
-    throw err; // Re-throw the error after handling it
+    errorHandle(err);
   }
 };

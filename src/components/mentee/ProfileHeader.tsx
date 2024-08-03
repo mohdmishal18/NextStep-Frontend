@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { FaEdit } from "react-icons/fa";
 
 const ProfileHeader: React.FC = () => {
-  const [profileImage, setProfileImage] = useState("/sampleProfile.jpg");
+  const [profileImage, setProfileImage] = useState("/placeeHolderProfile.jpg");
   const [previewProfileImage, setPreviewProfileImage] = useState<string | null>(
     null
   );
   const [bannerImage, setBannerImage] = useState(
-    "https://cdn.builder.io/api/v1/image/assets/TEMP/210d84119455df534826d71fac74b74977de88a05b22ee00c6a99bd49ace1065?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be"
+    "/placeeHolderProfile.jpg"
   );
   const [previewBannerImage, setPreviewBannerImage] = useState<string | null>(
     null
