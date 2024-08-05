@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+
+import { MenteeProfile } from '../../Types/menteeTypes';
+import { rootState } from '../../store/store';
 
 const PersonalInfo: React.FC = () => {
-  const [fullName, setFullName] = useState("mohd mishal");
-  const [email, setEmail] = useState("mohdmishal18@gmail.com");
-  const [phone, setPhone] = useState("9947865508");
-  const [education, setEducation] = useState("+2 graduate");
-  const [bio, setBio] = useState("As a mentee, I am proactive, open to feedback, and committed to continuous learning. I believe that with the right guidance and support, I can achieve my goal of becoming a proficient full stack developer.");
+
+  const mentee: MenteeProfile | null = useSelector(
+    (state: rootState) => state.mentee.menteeData
+  )
+
+  const [fullName, setFullName] = useState(mentee?.name);
+  const [email, setEmail] = useState(mentee?.email);
+  const [phone, setPhone] = useState(mentee?.phone);
+  const [education, setEducation] = useState(mentee?.education);
+  const [bio, setBio] = useState(mentee?.bio);
 
   return (
     <section className="flex flex-col items-start pt-3 pr-3 pb-14 pl-6 mt-24 rounded-xl bg-zinc-800 max-md:pl-5 max-md:mt-10 max-md:max-w-full">

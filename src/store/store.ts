@@ -26,5 +26,5 @@ const store = configureStore({
 })
   
   const persistStoree = persistStore(store)
-  export type RootState = ReturnType<typeof store.getState>;
+  export type rootState = ReturnType<typeof store.getState>;
   export  {store,persistStoree}

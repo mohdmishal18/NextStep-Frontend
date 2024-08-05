@@ -112,7 +112,7 @@ const Otp: React.FC = () => {
 
       if (response?.data.OtpVerfication === "OTP verified successfully") {
         dispatch(menteeLogin(response.data.user));
-        navigate("/profile");
+        navigate("/mentee/account");
         localStorage.removeItem('otpEmail')
         localStorage.removeItem('otpTimer')
       }

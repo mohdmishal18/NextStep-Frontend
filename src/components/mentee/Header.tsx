@@ -1,6 +1,13 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { rootState } from '../../store/store';
+import { MenteeProfile } from '../../Types/menteeTypes';
 
 const Header: React.FC = () => {
+  const mentee: MenteeProfile | null = useSelector(
+    (state: rootState) => state.mentee.menteeData
+  )
+
   return (
     <header className="flex gap-5 justify-between self-center w-full max-w-[1016px] max-md:flex-wrap max-md:max-w-full">
       <div className="flex gap-3 px-4 py-4 my-auto text-lg font-light text-sky-50 rounded-3xl bg-zinc-800">
@@ -19,8 +26,8 @@ const Header: React.FC = () => {
               <div className="relative shrink-0 bg-emerald-500 rounded-md border-2 border-white border-solid h-[11px]" />
             </div>
             <div className="flex flex-col flex-1 text-sm text-sky-50">
-              <div className="font-light">Olivia Rhye</div>
-              <div className="font-extralight">olivia@untitledui.com</div>
+              <div className="font-light">{mentee?.name}</div>
+              <div className="font-extralight">{mentee?.email}</div>
             </div>
           </div>
         </div>

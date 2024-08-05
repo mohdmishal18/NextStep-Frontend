@@ -5,6 +5,9 @@ import Login from "../pages/auth/Login";
 import SignUp from "../pages/auth/SignUp";
 import Profile from "../pages/auth/ProfilePage";
 import MentorApplyPage from "../pages/mentor/MentorApplyPage";
+
+import ProtectLogin from "./PrivateRoutes/ProtectMentee";
+
 import OtpPage from "../pages/auth/OtpPage";
 import HomePage from "../pages/common/HomePage";
 
@@ -22,11 +25,11 @@ const AuthRoutes = () => {
   return (
     <Routes>
       <Route element={<AuthLayout />}>
-      <Route path="" element={<HomePage/>}/>
-        <Route path="login" element={<Login />} />
-        <Route path="signup" element={<SignUp />} />
-        <Route path="mentorApply" element={<MentorApplyPage/>}/>
-        <Route path="verifyOtp" element={<OtpPage/>}/>
+      <Route path="" element={<ProtectLogin><HomePage/></ProtectLogin>}/>
+        <Route path="login" element={<ProtectLogin><Login /></ProtectLogin>} />
+        <Route path="signup" element={<ProtectLogin><SignUp /></ProtectLogin>} />
+        <Route path="mentorApply" element={<ProtectLogin><MentorApplyPage/></ProtectLogin>}/>
+        <Route path="verifyOtp" element={<ProtectLogin><OtpPage/></ProtectLogin>}/>
       </Route>
     </Routes>
   );

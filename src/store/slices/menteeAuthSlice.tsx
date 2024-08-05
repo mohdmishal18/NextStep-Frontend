@@ -7,6 +7,8 @@ interface Mentee {
   password: string;
   phone: string;
   isBlocked: boolean;
+  education: string;
+  bio: string
   otpVerified: boolean;
   profilePicture?:string;
   coverPicture?: string;

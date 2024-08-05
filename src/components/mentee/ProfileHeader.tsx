@@ -1,5 +1,9 @@
 import React, { useState } from "react";
+import { useDispatch, UseDispatch, useSelector } from "react-redux";
+import { rootState } from "../../store/store";
+import { MenteeProfile } from "../../Types/menteeTypes";
 import { FaEdit } from "react-icons/fa";
+
 
 const ProfileHeader: React.FC = () => {
   const [profileImage, setProfileImage] = useState("/placeeHolderProfile.jpg");
@@ -12,6 +16,12 @@ const ProfileHeader: React.FC = () => {
   const [previewBannerImage, setPreviewBannerImage] = useState<string | null>(
     null
   );
+
+  const dispatch = useDispatch()
+
+  const mentee: MenteeProfile | null = useSelector(
+    (state: rootState) => state.mentee.menteeData
+  )
 
   const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -58,7 +68,7 @@ const ProfileHeader: React.FC = () => {
           <div className="flex gap-5 max-md:flex-col">
             <div className="flex flex-col w-[84%] max-md:ml-0 max-md:w-full">
               <div className="mt-16 flex flex-col grow items-start font-light text-sky-50 max-md:mt-10 max-md:max-w-full">
-                <h2 className="ml-5 text-3xl max-md:ml-2.5">mohd mishal</h2>
+                <h2 className="ml-5 text-3xl max-md:ml-2.5">{mentee?.name}</h2>
                 <div className="flex gap-4 px-5 py-2.5 mt-3.5 whitespace-nowrap rounded-xl bg-zinc-900">
                   <div className="flex flex-col">
                     <div className="text-xl">13</div>
