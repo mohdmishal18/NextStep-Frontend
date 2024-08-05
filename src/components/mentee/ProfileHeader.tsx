@@ -1,12 +1,20 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
+import axios from "axios";
+
 import { useDispatch, UseDispatch, useSelector } from "react-redux";
 import { rootState } from "../../store/store";
 import { MenteeProfile } from "../../Types/menteeTypes";
 import { FaEdit } from "react-icons/fa";
 
+// Define the types for the images
+type UploadImageResponse = {
+  secure_url: string;
+};
+
 
 const ProfileHeader: React.FC = () => {
-  const [profileImage, setProfileImage] = useState("/placeeHolderProfile.jpg");
+  const [profileImage, setProfileImage] = useState("");
   const [previewProfileImage, setPreviewProfileImage] = useState<string | null>(
     null
   );
@@ -45,13 +53,49 @@ const ProfileHeader: React.FC = () => {
     }
   };
 
+  const uploadImage = async (profileImage: File, coverImage: File): Promise<{ profileUrl: string; coverUrl: string } | null> => {
+    const profileData = new FormData();
+    profileData.append('file', profileImage);
+    profileData.append('upload_preset', 'MohdMishal');
+    profileData.append('cloud_name', 'usermanagement');
+    profileData.append('folder', 'NextStepPictures/ProfilePictures');
+  
+    const coverData = new FormData();
+    coverData.append('file', coverImage);
+    coverData.append('upload_preset', 'MohdMishal');
+    coverData.append('cloud_name', 'usermanagement');
+    coverData.append('folder', 'NextStepPictures/ProfilePictures');
+  
+    try {
+      const profileResponse = await axios.post<UploadImageResponse>('https://api.cloudinary.com/v1_1/usermanagement/image/upload', profileData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      const coverResponse = await axios.post<UploadImageResponse>('https://api.cloudinary.com/v1_1/usermanagement/image/upload', coverData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      return {
+        profileUrl: profileResponse.data.secure_url,
+        coverUrl: coverResponse.data.secure_url
+      };
+    } catch (error) {
+      toast.error('Image upload failed');
+      return null;
+    }
+  };
+
   return (
     <section className="flex flex-col grow mt-20 w-full rounded-xl bg-zinc-900 max-md:mt-10 max-md:max-w-full">
       <div className="flex relative flex-col rounded-xl bg-zinc-800 max-md:max-w-full">
         <div className="flex flex-col items-start px-5 pt-20 w-full rounded-xl min-h-[250px] max-md:pr-5 max-md:max-w-full">
           <img
             loading="lazy"
-            src={previewBannerImage || bannerImage}
+            src={previewBannerImage || '/placeeHolderProfile.jpg'}
             alt="Profile background"
             className="object-cover absolute inset-0 w-full h-full rounded-xl"
           />
@@ -84,10 +128,7 @@ const ProfileHeader: React.FC = () => {
                   </div>
                 </div>
                 <p className="self-stretch mt-5 text-sm leading-3 text-white max-md:max-w-full">
-                  As a mentee, I am proactive, open to feedback, and committed
-                  to continuous learning. I believe that with the right guidance
-                  and support, I can achieve my goal of becoming a proficient
-                  full stack developer.
+                  {mentee?.bio}
                 </p>
               </div>
             </div>
@@ -104,7 +145,7 @@ const ProfileHeader: React.FC = () => {
         <div className="absolute left-10 top-40 z-10 w-44 h-44 rounded-full border-[5px] border-zinc-900 object-cover">
           <img
             loading="lazy"
-            src={previewProfileImage || profileImage}
+            src={previewProfileImage || '/placeeHolderProfile.jpg'}
             alt="Profile picture"
             className="w-full h-full rounded-full object-cover"
           />

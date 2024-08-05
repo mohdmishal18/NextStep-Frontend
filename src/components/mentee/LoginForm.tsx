@@ -1,12 +1,17 @@
-import { useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { toast } from 'react-toastify';
-import { RiEyeCloseFill } from 'react-icons/ri';
-import { FaEye } from 'react-icons/fa';
-import axios from 'axios';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { menteeLogin } from "../../store/slices/menteeAuthSlice";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { RiEyeCloseFill } from "react-icons/ri";
+import { FaEye } from "react-icons/fa";
+import axios from "axios";
+
+import { signIn } from "../../api/mentee";
 
 // Assuming SignupInputField is located in `../common/SignupInputField`
-import SignupInputField from '../common/SignupInputField';
+import SignupInputField from "../common/SignupInputField";
 
 interface LoginFormData {
   email: string;
@@ -15,35 +20,53 @@ interface LoginFormData {
 
 const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState<'mentee' | 'mentor'>('mentee');
+  const [role, setRole] = useState<"mentee" | "mentor">("mentee");
+
+  const [error, setError] = useState({
+    emailErr: "",
+    passwordErr: "",
+  });
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<LoginFormData>({
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
+  } = useForm<LoginFormData>();
 
-  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
+  // Handling OnSubmit
+  const onSubmit = async (data: LoginFormData) => {
     try {
-      const response = await axios.post('/api/login', { ...data, role });
-      if (response.data.success) {
-        toast.success('Login successful!');
-        // Handle successful login, e.g., redirect to dashboard
-      } else {
-        toast.error('Login failed');
+      const response = await signIn(data.email, data.password);
+      if (
+        response.data.message == "Login Succesfully" &&
+        response.data.status
+      ) {
+        dispatch(menteeLogin(response.data.user));
+        navigate("/mentee/account");
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.error?.message || 'An unexpected error occurred';
-        toast.error(errorMessage);
-      } else {
-        toast.error('An unexpected error occurred');
+        console.log(error);
+        if (error.response?.data.otpVerified == "false") {
+          localStorage.setItem("otpTimer", "60");
+          navigate("/verifyOtp");
+        } else if (error.response?.data.message == "incorrect password") {
+          setError({
+            emailErr: "",
+            passwordErr: "Incorrect password",
+          });
+        } else if (error.response?.data.message == "this user is blocked ") {
+          toast.error("This user is blocked");
+        } else {
+          setError({
+            emailErr: "invalid email user not found",
+            passwordErr: "",
+          });
+        }
       }
     }
   };
@@ -54,14 +77,22 @@ const LoginForm: React.FC = () => {
         {/* Toggle Bar */}
         <div className="flex justify-between mb-6 text-lg font-semibold text-gray-300">
           <button
-            className={`flex-1 py-2 ${role === 'mentee' ? 'bg-blue text-white' : 'bg-gray-700 text-gray-300'}`}
-            onClick={() => setRole('mentee')}
+            className={`flex-1 py-2 ${
+              role === "mentee"
+                ? "bg-blue text-white"
+                : "bg-gray-700 text-gray-300"
+            }`}
+            onClick={() => setRole("mentee")}
           >
             I'm a Mentee
           </button>
           <button
-            className={`flex-1 py-2 ${role === 'mentor' ? 'bg-blue text-white' : 'bg-gray-700 text-gray-300'}`}
-            onClick={() => setRole('mentor')}
+            className={`flex-1 py-2 ${
+              role === "mentor"
+                ? "bg-blue text-white"
+                : "bg-gray-700 text-gray-300"
+            }`}
+            onClick={() => setRole("mentor")}
           >
             I'm a Mentor
           </button>
@@ -85,38 +116,55 @@ const LoginForm: React.FC = () => {
             label="Email Address"
             placeholder="i.e. davon@mail.com"
             type="email"
-            register={register('email', {
-              required: 'Email is required',
-              pattern: {
-                value: /^[^@]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                message: 'Enter a valid email address',
-              },
+            {...register("email", {
+              required: "Email field is required",
+              pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
             })}
-            error={errors.email}
-            onChange={(e) => setValue('email', e.target.value.trim())}
+            onChange={(e) => setValue("email", e.target.value.trim())}
           />
+          {errors.email?.type == "required" && (
+            <h1 className="text-red-600">{errors.email.message}</h1>
+          )}
+          {!errors.email && error.emailErr && (
+            <h1 className="text-red-600">{error.emailErr}</h1>
+          )}
+
           <SignupInputField
             label="Password"
             placeholder="**********"
-            type={showPassword ? 'text' : 'password'}
-            register={register('password', {
-              required: 'Password is required',
-              minLength: {
-                value: 8,
-                message: 'Password must be at least 8 characters',
-              },
+            type={showPassword ? "text" : "password"}
+            {...register("password", {
+              required: "password is required",
             })}
-            error={errors.password}
-            icon={showPassword ? <FaEye onClick={() => setShowPassword(!showPassword)} /> : <RiEyeCloseFill onClick={() => setShowPassword(!showPassword)} />}
-            onChange={(e) => setValue('password', e.target.value.trim())}
+            icon={
+              showPassword ? (
+                <FaEye onClick={() => setShowPassword(!showPassword)} />
+              ) : (
+                <RiEyeCloseFill
+                  onClick={() => setShowPassword(!showPassword)}
+                />
+              )
+            }
+            onChange={(e) => setValue("password", e.target.value.trim())}
           />
-          <button type="submit" className="px-4 py-3.5 mt-8 max-w-full font-semibold tracking-normal leading-7 text-center bg-blue rounded-[50px] w-[175px] max-md:px-5">
+           {errors.password?.type === "required" && (
+              <h1 className="text-red-600 mt-2">{errors.password.message}</h1>
+            )}
+            {error.passwordErr && errors.password?.type != "required" && (
+              <h1 className="text-red-600 mt-2">{error.passwordErr}</h1>
+            )}
+          <button
+            type="submit"
+            className="px-4 py-3.5 mt-8 max-w-full font-semibold tracking-normal leading-7 text-center bg-blue rounded-[50px] w-[175px] max-md:px-5"
+          >
             Log In
           </button>
         </form>
         <p className="mt-6 text-sm leading-6 text-blue max-md:max-w-full">
           Don't have an account?{" "}
-          <a href="#" className="font-semibold text-blue">Create free account</a>
+          <a href="#" className="font-semibold text-blue">
+            Create free account
+          </a>
         </p>
       </div>
     </div>

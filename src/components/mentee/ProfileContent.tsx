@@ -20,7 +20,7 @@ const ProfileContent: React.FC = () => {
                   My Profile
                 </span>
               </button>
-              <div className="flex flex-col px-7 mt-3.5 max-md:px-5">
+              {/* <div className="flex flex-col px-7 mt-3.5 max-md:px-5">
                 <button className="flex gap-2.5 text-xl text-white">
                   <img
                     loading="lazy"
@@ -50,7 +50,7 @@ const ProfileContent: React.FC = () => {
                   />
                   <span className="flex-auto my-auto">Billing</span>
                 </button>
-              </div>
+              </div> */}
             </div>
             <button className="flex gap-3.5 mx-5 mt-4 max-md:mx-2.5">
               <img

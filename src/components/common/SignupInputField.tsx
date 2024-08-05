@@ -6,7 +6,7 @@ interface SignupInputFieldProps  {
   type?: string;
   placeholder: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  register: any; // Replace with actual type
+  register?: any; // Replace with actual type
   error?: FieldError;
   icon?: React.ReactNode;
 }

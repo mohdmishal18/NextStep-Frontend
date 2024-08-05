@@ -1,7 +1,8 @@
 
 const menteeRoutes = {
     Signup: '/mentee/signup',
-    Signin: '/login',
+    Signin: '/mentee/signin',
+    logout: 'mentee/logout',
     verifyOtp: '/mentee/verify-otp',
     resendOtp: '/mentee/resend-otp'
 }

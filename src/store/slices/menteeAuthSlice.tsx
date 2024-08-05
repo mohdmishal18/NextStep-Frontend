@@ -29,7 +29,7 @@ const menteeSlice = createSlice({
   name:"mentee",
   initialState,
   reducers:{
-    menteeLogin : (state,action:PayloadAction<Mentee>)=>{
+    menteeLogin : (state,action:PayloadAction<Mentee | null>)=>{
       state.menteeLogin = true
       state.menteeData = action.payload
     },

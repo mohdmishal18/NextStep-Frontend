@@ -17,6 +17,28 @@ export const menteeSignup = async (menteeData: signUpData) => {
   }
 };
 
+// Sign in
+export const signIn = async (email: string, password: string) => {
+  try {
+    return await API.post(menteeRoutes.Signin, { email, password });
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+};
+
+// Logout Api
+export const logout = async () => {
+  try {
+    return await API.post(menteeRoutes.logout);
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+};
+
 export const verifyOtp = async (otp: number, email: string) => {
   try {
     return await API.post(menteeRoutes.verifyOtp, { otp, email });
