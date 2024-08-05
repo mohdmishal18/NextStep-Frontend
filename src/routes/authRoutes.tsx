@@ -1,11 +1,11 @@
 import { Route, Routes } from "react-router-dom";
 
 //pages
-import Login from "../pages/mentee/Login";
-import SignUp from "../pages/mentee/SignUp";
-import Profile from "../pages/mentee/ProfilePage";
+import Login from "../pages/auth/Login";
+import SignUp from "../pages/auth/SignUp";
+import Profile from "../pages/auth/ProfilePage";
 import MentorApplyPage from "../pages/mentor/MentorApplyPage";
-import OtpPage from "../pages/mentee/OtpPage";
+import OtpPage from "../pages/auth/OtpPage";
 import HomePage from "../pages/common/HomePage";
 
 import Navbar from "../components/common/Navbar";
@@ -28,7 +28,6 @@ const AuthRoutes = () => {
         <Route path="mentorApply" element={<MentorApplyPage/>}/>
         <Route path="verifyOtp" element={<OtpPage/>}/>
       </Route>
-      <Route path="profile" element={<Profile />} />
     </Routes>
   );
 };

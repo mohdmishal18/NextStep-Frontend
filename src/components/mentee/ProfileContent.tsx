@@ -1,6 +1,5 @@
 import React from "react";
-import ProfileHeader from "./ProfileHeader";
-import PersonalInfo from "./PersonalInfo";
+import { Outlet } from "react-router-dom";
 // import Interests from "./Interests";
 const ProfileContent: React.FC = () => {
   return (
@@ -21,7 +20,7 @@ const ProfileContent: React.FC = () => {
                   My Profile
                 </span>
               </button>
-              {/* <div className="flex flex-col px-7 mt-3.5 max-md:px-5">
+              <div className="flex flex-col px-7 mt-3.5 max-md:px-5">
                 <button className="flex gap-2.5 text-xl text-white">
                   <img
                     loading="lazy"
@@ -51,9 +50,9 @@ const ProfileContent: React.FC = () => {
                   />
                   <span className="flex-auto my-auto">Billing</span>
                 </button>
-              </div> */}
+              </div>
             </div>
-            {/* <button className="flex gap-3.5 mx-5 mt-4 max-md:mx-2.5">
+            <button className="flex gap-3.5 mx-5 mt-4 max-md:mx-2.5">
               <img
                 loading="lazy"
                 src="https://cdn.builder.io/api/v1/image/assets/TEMP/47fb58eff1844c667e917434fcbeef6de1f3e3a17dfc7265b162f8201c89fd4d?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be"
@@ -63,13 +62,11 @@ const ProfileContent: React.FC = () => {
               <span className="flex-auto my-auto text-xl text-white">
                 Delete Account
               </span>
-            </button> */}
+            </button>
           </div>
         </nav>
         <div className="flex flex-col mr-3 w-[78%] max-md:ml-0 max-md:w-full">
-          <ProfileHeader />
-          <PersonalInfo />
-          {/* <Interests /> */}
+          <Outlet/>
         </div>
       </div>
     </main>
