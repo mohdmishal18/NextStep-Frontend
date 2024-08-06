@@ -2,9 +2,15 @@ import API from "../service/axios";
 import errorHandle from "./errorHandling";
 //Endpoints
 import menteeRoutes from "../service/endPoints/menteeEndpoint";
-
 //types
 import { signUpData } from "../Types/menteeTypes";
+
+import { MenteeProfile } from "../Types/menteeTypes";
+
+interface EditPicturesResponse {
+  status: boolean;
+  user: MenteeProfile;
+}
 
 export const menteeSignup = async (menteeData: signUpData) => {
   try {
@@ -55,5 +61,44 @@ export const resendOtp = async (email: string) => {
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);
+  }
+};
+
+export const editPictures = async (
+  email: string,
+  profilePic: string,
+  coverPic: string
+): Promise<EditPicturesResponse | undefined> => {
+  try {
+    const response = await API.post<EditPicturesResponse>(menteeRoutes.EditPictures, {
+      email,
+      profilePic,
+      coverPic,
+    });
+    return response.data;
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    return undefined; // Ensure the function returns undefined in case of an error
+  }
+};
+
+
+export const editDetails = async (
+  name: string,phone: string,bio: string,education: string,email: string
+): Promise<EditPicturesResponse | undefined> => {
+  try {
+    const response = await API.post<EditPicturesResponse>(menteeRoutes.EditDetails, {
+     name,
+     phone,
+     bio,
+     education,
+     email,
+    });
+    return response.data;
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    return undefined; // Ensure the function returns undefined in case of an error
   }
 };

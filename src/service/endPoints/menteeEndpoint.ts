@@ -4,7 +4,9 @@ const menteeRoutes = {
     Signin: '/mentee/signin',
     logout: 'mentee/logout',
     verifyOtp: '/mentee/verify-otp',
-    resendOtp: '/mentee/resend-otp'
+    resendOtp: '/mentee/resend-otp',
+    EditPictures: '/mentee/edit-picture',
+    EditDetails: '/mentee/edit-details'
 }
 
 

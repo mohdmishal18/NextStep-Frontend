@@ -13,8 +13,8 @@ export interface MenteeProfile {
     password: string;
     phone: string;
     isBlocked: boolean;
-    education?: string,
-    bio?: string
+    education: string,
+    bio: string
     otpVerified: boolean;
     profilePicture?:string;
     coverPicture?: string;
