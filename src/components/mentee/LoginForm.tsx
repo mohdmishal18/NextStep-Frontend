@@ -1,7 +1,10 @@
+import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { menteeLogin } from "../../store/slices/menteeAuthSlice";
+import { googleAuthLogin } from "../../api/mentee";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { RiEyeCloseFill } from "react-icons/ri";
@@ -10,8 +13,25 @@ import axios from "axios";
 
 import { signIn } from "../../api/mentee";
 
-// Assuming SignupInputField is located in `../common/SignupInputField`
+// Assuming SignupInputField is located in ../common/SignupInputField
 import SignupInputField from "../common/SignupInputField";
+
+interface CredentialPayload extends JwtPayload {
+  iss: string;
+  azp: string;
+  aud: string;
+  sub: string;
+  email: string;
+  email_verified: boolean;
+  exp: number;
+  family_name: string;
+  given_name: string;
+  iat: number;
+  jti: string;
+  name: string;
+  nbf: number;
+  picture: string;
+}
 
 interface LoginFormData {
   email: string;
@@ -71,27 +91,54 @@ const LoginForm: React.FC = () => {
     }
   };
 
+  const googleLogin = async (response: CredentialResponse) => {
+    try {
+      const credentails: CredentialPayload = jwtDecode(
+        response.credential as string
+      );
+      const googleLoginResponse = await googleAuthLogin(
+        credentails.name,
+        credentails.email,
+        credentails.picture
+      );
+      if (
+        googleLoginResponse.data.message == "google Login succesfull" &&
+        googleLoginResponse.data.status
+      ) {
+        console.log(googleLoginResponse);
+        
+        dispatch(menteeLogin(googleLoginResponse.data.loginUser));
+        navigate("/mentee");
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (!error.response?.data.status) {
+          toast.error(error.response?.data.message)
+        }
+      }
+      console.log(error);
+    }
+  };
+
   return (
     <div className="flex flex-col w-6/12 max-md:ml-0 max-md:w-full">
       <div className="flex flex-col mt-2 text-base text-white max-md:mt-10 max-md:max-w-full">
         {/* Toggle Bar */}
         <div className="flex justify-between mb-6 text-lg font-semibold text-gray-300">
           <button
-            className={`flex-1 py-2 ${
-              role === "mentee"
+            className={`flex-1 py-2 ${role === "mentee"
                 ? "bg-blue text-white"
                 : "bg-gray-700 text-gray-300"
-            }`}
+              }`}
             onClick={() => setRole("mentee")}
           >
             I'm a Mentee
           </button>
           <button
-            className={`flex-1 py-2 ${
-              role === "mentor"
+            className={`flex-1 py-2 ${role === "mentor"
                 ? "bg-blue text-white"
                 : "bg-gray-700 text-gray-300"
-            }`}
+              }`}
             onClick={() => setRole("mentor")}
           >
             I'm a Mentor
@@ -100,17 +147,12 @@ const LoginForm: React.FC = () => {
         <h1 className="text-5xl font-semibold tracking-tighter leading-[61.88px] max-md:max-w-full max-md:text-4xl">
           Log in to your account.
         </h1>
-        <button className="flex justify-center items-center p-4 mt-11 font-semibold tracking-normal leading-7 text-right bg-slate-800 rounded-[35px] max-md:px-5 max-md:mt-10 max-md:max-w-full">
-          <div className="flex gap-3.5">
-            <img
-              loading="lazy"
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/fde9b1bb924442aad0475359f42cf301a57185969732205b7dafd0b05a712070?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be"
-              alt="Google logo"
-              className="shrink-0 my-auto aspect-square w-[23px]"
-            />
-            <span>Sign in with Google</span>
-          </div>
-        </button>
+        <GoogleLogin
+          onSuccess={googleLogin}
+          onError={() => {
+            console.log("Login Failed");
+          }}
+        />
         <form className="flex flex-col mt-10" onSubmit={handleSubmit(onSubmit)}>
           <SignupInputField
             label="Email Address"
@@ -147,12 +189,12 @@ const LoginForm: React.FC = () => {
             }
             onChange={(e) => setValue("password", e.target.value.trim())}
           />
-           {errors.password?.type === "required" && (
-              <h1 className="text-red-600 mt-2">{errors.password.message}</h1>
-            )}
-            {error.passwordErr && errors.password?.type != "required" && (
-              <h1 className="text-red-600 mt-2">{error.passwordErr}</h1>
-            )}
+          {errors.password?.type === "required" && (
+            <h1 className="text-red-600 mt-2">{errors.password.message}</h1>
+          )}
+          {error.passwordErr && errors.password?.type != "required" && (
+            <h1 className="text-red-600 mt-2">{error.passwordErr}</h1>
+          )}
           <button
             type="submit"
             className="px-4 py-3.5 mt-8 max-w-full font-semibold tracking-normal leading-7 text-center bg-blue rounded-[50px] w-[175px] max-md:px-5"

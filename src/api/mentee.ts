@@ -102,3 +102,14 @@ export const editDetails = async (
     return undefined; // Ensure the function returns undefined in case of an error
   }
 };
+
+// Google login
+export const googleAuthLogin = async (name: string, email: string, image: string) => {
+  try {
+    return await API.post(menteeRoutes.googleAuth, { name, email, image });
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+};

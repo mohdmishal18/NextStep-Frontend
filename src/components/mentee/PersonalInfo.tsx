@@ -68,10 +68,10 @@ const PersonalInfo: React.FC = () => {
       } else {
         toast.error("Failed to update profile. Please try again.");
       }
-
-      toast.success("Personal information updated successfully");
     } catch (error) {
-      
+      // Handle the error
+      console.error("Error uploading images", error);
+      toast.error("An error occurred while uploading images.");
     }
   };
 
