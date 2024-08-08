@@ -2,7 +2,10 @@ import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import menteeReducer from './slices/menteeAuthSlice'
+import { PersistPartial } from "redux-persist/es/persistReducer";
+
+import menteeReducer, { MenteeState } from './slices/menteeAuthSlice'
+import mentorReducer, { MentorState } from './slices/mentorAuthSlice'
 
 
 
@@ -11,11 +14,24 @@ const menteePersistConfig = {
     storage,
 };
 
+const mentorPersistConfig = {
+    key: 'mentor',
+    storage
+}
+
 const persistedMenteeReducer = persistReducer(menteePersistConfig, menteeReducer);
+const persistedMentorReducer = persistReducer(mentorPersistConfig, mentorReducer)
 
 const AllReducers = combineReducers({
     mentee :  persistedMenteeReducer,
+    mentor : persistedMentorReducer
 })
+
+export type rootState = {
+    mentee: MenteeState & PersistPartial; 
+    mentor: MentorState & PersistPartial; 
+    // admin: AdminState & PersistPartial; 
+  };
 
 const store = configureStore({
     reducer: AllReducers,
@@ -26,5 +42,5 @@ const store = configureStore({
 })
   
   const persistStoree = persistStore(store)
-  export type rootState = ReturnType<typeof store.getState>;
+//   export type rootState = ReturnType<typeof store.getState>;
   export  {store,persistStoree}

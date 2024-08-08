@@ -15,6 +15,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <PersistGate loading={null} persistor={persistStoree}></PersistGate>
     <App />
     </Provider>
-    </GoogleOAuthProvider>;
-  </React.StrictMode>,
+    </GoogleOAuthProvider>
+  </React.StrictMode>
 )

@@ -2,6 +2,7 @@
 
 import { Route, Routes } from 'react-router-dom';
 import Layout from '../components/layouts/mentee/Layout';
+import ProtectLogin from './PrivateRoutes/ProtectMentee';
 
 import ProfileContent from '../components/mentee/ProfileContent';
 
@@ -14,7 +15,7 @@ import ProfilePage from '../pages/mentee/ProfilePagee';
 const MenteeRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
+      <Route path="/" element={<ProtectLogin><Layout /></ProtectLogin>}>
         <Route index element={<DashboardPage />} />
         <Route path='myfeed' element={<MyFeedPage/>}/>
         <Route path="account" element={<ProfileContent/>}>

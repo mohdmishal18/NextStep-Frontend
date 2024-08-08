@@ -1,4 +1,4 @@
-import Dashboard from "../../components/mentee/Dashboard"
+import Dashboard from "../../components/mentor/Dashboard"
 
 const DashboardPage = () => {
   return (

@@ -1,9 +1,9 @@
 // Layout.js
 
 import { Outlet, useLocation } from 'react-router-dom';
-import Sidebar from '../../mentee/SideBar';
-import Header from '../../mentee/Header';
-import ProfileContent from '../../mentee/ProfileContent';
+import Sidebar from '../../mentor/SideBar';
+import Header from '../../mentor/Header';
+import ProfileContent from '../../mentor/ProfileContent';
 
 const Layout = () => {
   const location = useLocation();
@@ -25,7 +25,7 @@ const Layout = () => {
         </div>
       </div>
     </div>
-  );
+  )
 };
 
 export default Layout;

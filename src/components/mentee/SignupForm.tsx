@@ -65,10 +65,10 @@ const SignUpForm = () => {
       onSubmit={handleSubmit(onSubmit)}
     >
       <h1 className="flex gap-5 text-5xl font-medium tracking-tighter leading-[62px] max-md:flex-wrap max-md:text-4xl">
-        <span className="grow text-white max-md:text-4xl">Login to your</span>
+        <span className="grow text-white max-md:text-4xl">Sign to your</span>
         <span className="flex-auto text-blue max-md:text-4xl">Next Step!</span>
       </h1>
-      <button className="flex justify-center items-center p-4 mt-11 font-semibold tracking-normal leading-7 text-right bg-slate-800 rounded-[35px] max-md:px-5 max-md:mt-10 max-md:max-w-full">
+      {/* <button className="flex justify-center items-center p-4 mt-11 font-semibold tracking-normal leading-7 text-right bg-slate-800 rounded-[35px] max-md:px-5 max-md:mt-10 max-md:max-w-full">
         <div className="flex gap-3.5">
           <img
             loading="lazy"
@@ -78,7 +78,7 @@ const SignUpForm = () => {
           />
           <span className="text-white">Sign in with Google</span>
         </div>
-      </button>
+      </button> */}
       <SignupInputField
         label="First & Last Name"
         placeholder="i.e. Davon Lean"

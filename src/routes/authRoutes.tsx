@@ -6,7 +6,7 @@ import SignUp from "../pages/auth/SignUp";
 import Profile from "../pages/auth/ProfilePage";
 import MentorApplyPage from "../pages/mentor/MentorApplyPage";
 
-import ProtectLogin from "./PrivateRoutes/ProtectMentee";
+import ProtectLogin from "./PrivateRoutes/ProtectAuth";
 
 import OtpPage from "../pages/auth/OtpPage";
 import HomePage from "../pages/common/HomePage";

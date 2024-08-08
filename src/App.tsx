@@ -6,12 +6,13 @@ import './App.css'
 //routes
 import AuthRoutes from './routes/AuthRoutes';
 import MenteeRoutes from './routes/menteeRoutes';
-
+import MentorRoutes from './routes/mentorRoutes';
 const App = () => {
   const router = createBrowserRouter([
 
     {path: "/*",element: <AuthRoutes/>},
-    {path: '/mentee/*', element: <MenteeRoutes/>}
+    {path: '/mentee/*', element: <MenteeRoutes/>},
+    {path: '/mentor/*', element: <MentorRoutes/>}
     
   ])
   return (

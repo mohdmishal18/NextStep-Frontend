@@ -106,14 +106,14 @@ const LoginForm: React.FC = () => {
         googleLoginResponse.data.status
       ) {
         console.log(googleLoginResponse);
-        
+
         dispatch(menteeLogin(googleLoginResponse.data.loginUser));
         navigate("/mentee");
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (!error.response?.data.status) {
-          toast.error(error.response?.data.message)
+          toast.error(error.response?.data.message);
         }
       }
       console.log(error);
@@ -126,19 +126,21 @@ const LoginForm: React.FC = () => {
         {/* Toggle Bar */}
         <div className="flex justify-between mb-6 text-lg font-semibold text-gray-300">
           <button
-            className={`flex-1 py-2 ${role === "mentee"
+            className={`flex-1 py-2 ${
+              role === "mentee"
                 ? "bg-blue text-white"
                 : "bg-gray-700 text-gray-300"
-              }`}
+            }`}
             onClick={() => setRole("mentee")}
           >
             I'm a Mentee
           </button>
           <button
-            className={`flex-1 py-2 ${role === "mentor"
+            className={`flex-1 py-2 ${
+              role === "mentor"
                 ? "bg-blue text-white"
                 : "bg-gray-700 text-gray-300"
-              }`}
+            }`}
             onClick={() => setRole("mentor")}
           >
             I'm a Mentor
@@ -147,12 +149,6 @@ const LoginForm: React.FC = () => {
         <h1 className="text-5xl font-semibold tracking-tighter leading-[61.88px] max-md:max-w-full max-md:text-4xl">
           Log in to your account.
         </h1>
-        <GoogleLogin
-          onSuccess={googleLogin}
-          onError={() => {
-            console.log("Login Failed");
-          }}
-        />
         <form className="flex flex-col mt-10" onSubmit={handleSubmit(onSubmit)}>
           <SignupInputField
             label="Email Address"
@@ -195,12 +191,20 @@ const LoginForm: React.FC = () => {
           {error.passwordErr && errors.password?.type != "required" && (
             <h1 className="text-red-600 mt-2">{error.passwordErr}</h1>
           )}
-          <button
-            type="submit"
-            className="px-4 py-3.5 mt-8 max-w-full font-semibold tracking-normal leading-7 text-center bg-blue rounded-[50px] w-[175px] max-md:px-5"
-          >
-            Log In
-          </button>
+          <div className="flex justify-between mt-8">
+            <button
+              type="submit"
+              className="px-4 py-3.5 max-w-full font-semibold tracking-normal leading-7 text-center bg-blue rounded-[50px] w-[175px] max-md:px-5"
+            >
+              Log In
+            </button>
+            <GoogleLogin
+              onSuccess={googleLogin}
+              onError={() => {
+                console.log("Login Failed");
+              }}
+            />
+          </div>
         </form>
         <p className="mt-6 text-sm leading-6 text-blue max-md:max-w-full">
           Don't have an account?{" "}

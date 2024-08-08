@@ -13,8 +13,6 @@ const MentorApply: React.FC = () => {
   >(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [profileError, setProfileError] = useState(true)
-console.log(profileError);
 
   const {
     register,
@@ -30,7 +28,6 @@ console.log(profileError);
 
   const validateProfilePicture = (file: File | undefined): true | string => {
     if (!file){
-      setProfileError(true)
       return "Profile picture is required";
     } 
     return true;
@@ -45,7 +42,6 @@ console.log(profileError);
       setError("profilePicture", { type: "manual", message: validationResult });
       return;
     }
-    setProfileError(false)
     clearErrors("profilePicture");
     if (file) {
       const filePreview = URL.createObjectURL(file);
@@ -80,6 +76,8 @@ console.log(profileError);
       if (data.profilePicture) {
         formData.append("profilePicture", data.profilePicture);
       }
+
+      console.log(formData," this is the form data")
 
       const response = await axios.post("/api/mentor-apply", formData);
       if (response.data.success) {
@@ -135,12 +133,6 @@ console.log(profileError);
               {errors.profilePicture && (
                 <p className="text-red-500 text-sm mt-2">
                   {errors.profilePicture.message}
-                </p>
-              )}
-              
-              {profileError && (
-                <p className="text-red-500 text-sm mt-2">
-                  Profile picture is required !
                 </p>
               )}
             </div>
