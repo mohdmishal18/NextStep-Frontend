@@ -1,4 +1,7 @@
-export const adminRoutes = {
-    Signin: 'admin/login',
-    
+const adminRoutes = {
+    Signin: '/admin/login',
+    googleAuth: "/mentee/google-login",
 }
+
+
+export default adminRoutes
