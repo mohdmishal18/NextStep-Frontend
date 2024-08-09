@@ -1,13 +1,15 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { navLinks } from "../../constants";
+
+// Import the SVG as a React component
+import BlackWhiteLogo from "../SvgLogos/BlackWhiteLogo";
 
 const Navbar = () => {
   const [active, setActive] = useState("");
   const [activeButton, setActiveButton] = useState("");
   const location = useLocation();
 
-  // Update activeButton based on the current location
   useEffect(() => {
     if (location.pathname === "/login") {
       setActiveButton("login");
@@ -19,13 +21,9 @@ const Navbar = () => {
   }, [location]);
 
   return (
-    <header className="flex z-10 gap-5 justify-between items-center px-20 py-3.5 w-full text-base font-medium bg-zinc-800 max-md:flex-wrap max-md:px-5 max-md:max-w-full">
-      <img
-        loading="lazy"
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/125182179e8d064f6517b40f28c375d809b18b9771bcaa9908fd2e81513c1e0a?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be"
-        alt="Company logo"
-        className="shrink-0 self-stretch max-w-full aspect-[1.85] w-[118px]"
-      />
+    <header className="flex z-10 gap-5 justify-between items-center px-20 py-3.5 w-full text-base font-medium bg-zinc-800 max-md:flex-wrap max-md:px-5 max-md:max-w-full h-24">
+      {/* Use the imported SVG component */}
+      <BlackWhiteLogo/>
       <nav className="flex-grow flex justify-center">
         <ul className="list-none flex gap-10">
           {navLinks.map((link) => (
@@ -36,7 +34,6 @@ const Navbar = () => {
               } hover:text-blue text-[18px] font-medium cursor-pointer`}
               onClick={() => setActive(link.title)}
             >
-              {/* <a href={`${link.id}`}>{link.title}</a> */}
               <Link to={`/${link.id}`}>{`${link.title}`}</Link>
             </li>
           ))}
