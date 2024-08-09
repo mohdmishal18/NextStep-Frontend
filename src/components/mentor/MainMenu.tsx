@@ -25,7 +25,9 @@ const MainMenu: React.FC = () => {
       <h2 className="mt-24 text-2xl text-white max-md:mt-10">MAIN MENU</h2>
       <ul className="flex flex-col items-start pr-10 pl-3 mt-12 max-md:pr-5 max-md:mt-10">
         {menuItems.map((item, index) => (
-          <li key={index} className="flex gap-2.5 mt-7 ml-3 text-xl text-white max-md:ml-2.5">
+          <li key={index} className="
+          flex gap-2.5 mt-7 ml-3 text-xl text-white max-md:ml-2.5
+          ">
             <Link to={item.path} className="flex items-center">
               <img loading="lazy" src={item.icon} alt={item.alt} className="shrink-0 aspect-square w-[30px]" />
               <span className="flex-auto my-auto">{item.label}</span>
