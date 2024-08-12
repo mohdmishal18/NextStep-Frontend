@@ -1,12 +1,12 @@
 import React from "react";
 import { FieldError } from "react-hook-form";
 
-interface SignupInputFieldProps  {
+interface SignupInputFieldProps {
   label: string;
   type?: string;
   placeholder: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  register?: any; // Replace with actual type
+  onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  register?: any; // Replace with actual type when using react-hook-form
   error?: FieldError;
   icon?: React.ReactNode;
 }
@@ -35,7 +35,7 @@ const SignupInputField: React.FC<SignupInputFieldProps> = ({
             className={`px-6 py-3 mt-2.5 border border-solid border-slate-700 leading-[162.5%] rounded-[35px] text-white bg-primary max-md:px-5 max-md:max-w-full w-full ${
               error ? "pr-12" : "pr-10"
             }`}
-            {...register}
+            {...(register ? register : {})} // Use register if provided
           />
         ) : (
           <input
@@ -44,8 +44,8 @@ const SignupInputField: React.FC<SignupInputFieldProps> = ({
             onChange={onChange}
             className={`px-6 py-3 mt-2.5 border border-solid border-slate-700 leading-[162.5%] rounded-[35px] text-white bg-primary max-md:px-5 max-md:max-w-full w-full ${
               error ? "pr-12" : "pr-10"
-            }`} // Adjust padding-right if error is present
-            {...register}
+            }`}
+            {...(register ? register : {})} // Use register if provided
           />
         )}
         {icon && (

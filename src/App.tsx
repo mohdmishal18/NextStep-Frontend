@@ -7,12 +7,15 @@ import './App.css'
 import AuthRoutes from './routes/AuthRoutes';
 import MenteeRoutes from './routes/menteeRoutes';
 import MentorRoutes from './routes/mentorRoutes';
+import AdminRoutes from './routes/adminRoutes';
+
 const App = () => {
   const router = createBrowserRouter([
 
-    {path: "/*",element: <AuthRoutes/>},
-    {path: '/mentee/*', element: <MenteeRoutes/>},
-    {path: '/mentor/*', element: <MentorRoutes/>}
+    { path: "/*",element: <AuthRoutes/> },
+    { path: '/mentee/*', element: <MenteeRoutes/> },
+    { path: '/mentor/*', element: <MentorRoutes/> },
+    { path: '/admin/*', element: <AdminRoutes/> }
     
   ])
   return (

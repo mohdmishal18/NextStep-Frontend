@@ -53,20 +53,18 @@ const Login: React.FC = () => {
     try {
       const response = await signIn(data.email, data.password);
       if (
-        response.data.message == "Login Succesfully" &&
+        response.data.message == "Login Successfull" &&
         response.data.status
       ) {
-        dispatch(adminLogin(response.data.user));
-        navigate("/mentee/account");
+        dispatch(adminLogin());
+        navigate("/admin")
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log(error);
         if (error.response?.data.message == "incorrect password") {
-
         } else if (error.response?.data.message == "invalid email") {
-          
-        } 
+        }
       }
     }
   };
@@ -101,10 +99,10 @@ const Login: React.FC = () => {
   };
 
   return (
-     <div className="flex flex-col w-6/12 max-md:ml-0 max-md:w-full">
+    <div className="flex flex-col w-6/12 max-md:ml-0 max-md:w-full">
       <div className="flex flex-col mt-2 text-base text-white max-md:mt-10 max-md:max-w-full">
         <h1 className="text-5xl font-semibold tracking-tighter leading-[61.88px] max-md:max-w-full max-md:text-4xl">
-          Log in to your account.
+          Log in as <span className="text-blue">ADMIN</span>.
         </h1>
         <form className="flex flex-col mt-10" onSubmit={handleSubmit(onSubmit)}>
           <SignupInputField
@@ -141,19 +139,45 @@ const Login: React.FC = () => {
           {errors.password?.type === "required" && (
             <h1 className="text-red-600 mt-2">{errors.password.message}</h1>
           )}
-          <div className="flex justify-between mt-8">
+          <div className="flex space-x-6 mt-8 items-center">
             <button
               type="submit"
               className="px-4 py-3.5 max-w-full font-semibold tracking-normal leading-7 text-center bg-blue rounded-[50px] w-[175px] max-md:px-5"
             >
               Log In
             </button>
-            <GoogleLogin
-              onSuccess={googleLogin}
-              onError={() => {
-                console.log("Login Failed");
+            <div className="relative flex justify-center items-center">
+              <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "1px",
+                height: "1px",
+                overflow: "hidden",
+                opacity: 0,
+                pointerEvents: "auto",
               }}
-            />
+              >
+                <GoogleLogin
+                onSuccess={googleLogin}
+                onError={() => {
+                  console.log("Login Failed");
+                }}
+              />
+              </div>
+              <button className="flex justify-center items-center p-4 font-semibold tracking-normal leading-7 text-right bg-slate-800 rounded-[35px] max-md:px-5">
+                <div className="flex gap-3.5">
+                  <img
+                    loading="lazy"
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/fde9b1bb924442aad0475359f42cf301a57185969732205b7dafd0b05a712070?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be"
+                    alt="Google logo"
+                    className="shrink-0 my-auto aspect-square w-[23px]"
+                  />
+                  <span className="text-white">Continue with Google</span>
+                </div>
+              </button>
+            </div>
           </div>
         </form>
       </div>

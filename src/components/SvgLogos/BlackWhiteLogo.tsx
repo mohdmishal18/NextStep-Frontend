@@ -1,4 +1,4 @@
-import logoUrl from '../../../public/logos/NextStepBlackWhite.svg';
+import logoUrl from '/logos/NextStepBlackWhite.svg';
 
 const BlackWhiteLogo = () => {
   return (
