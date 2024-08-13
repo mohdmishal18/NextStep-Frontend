@@ -40,7 +40,7 @@ interface LoginFormData {
 
 const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState<"mentee" | "mentor">("mentee");
+  // const [role, setRole] = useState<"mentee" | "mentor">("mentee");
 
   const [error, setError] = useState({
     emailErr: "",
@@ -124,7 +124,7 @@ const LoginForm: React.FC = () => {
     <div className="flex flex-col w-6/12 max-md:ml-0 max-md:w-full">
       <div className="flex flex-col mt-2 text-base text-white max-md:mt-10 max-md:max-w-full">
         {/* Toggle Bar */}
-        <div className="flex justify-between mb-6 text-lg font-semibold text-gray-300">
+        {/* <div className="flex justify-between mb-6 text-lg font-semibold text-gray-300">
           <button
             className={`flex-1 py-2 ${
               role === "mentee"
@@ -145,7 +145,7 @@ const LoginForm: React.FC = () => {
           >
             I'm a Mentor
           </button>
-        </div>
+        </div> */}
         <h1 className="text-5xl font-semibold tracking-tighter leading-[61.88px] max-md:max-w-full max-md:text-4xl">
           Log in to your account.
         </h1>

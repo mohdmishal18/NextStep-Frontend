@@ -3,7 +3,6 @@ import { Route, Routes } from "react-router-dom";
 //pages
 import Login from "../pages/auth/Login";
 import SignUp from "../pages/auth/SignUp";
-import Profile from "../pages/auth/ProfilePage";
 import MentorApplyPage from "../pages/mentor/MentorApplyPage";
 
 import ProtectLogin from "./PrivateRoutes/ProtectAuth";

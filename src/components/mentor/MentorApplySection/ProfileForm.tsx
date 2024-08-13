@@ -78,7 +78,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onSubmit, onPrevious, formDat
         </div>
       </div>
       <div className="flex justify-between mt-4">
-        <button type="button" onClick={handlePrevious} className="bg-blue">Previous</button>
+        <button type="button" onClick={handlePrevious} className="px-4 py-2 bg-blue text-white rounded hover:bg-blue-600">Previous</button>
         <button type="submit" className="px-4 py-2 bg-blue text-white rounded hover:bg-blue-600">Next</button>
       </div>
     </form>

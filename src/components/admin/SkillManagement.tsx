@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { getAllSkills } from "../../api/admin";
+import { toast } from "react-toastify";
+import { getAllSkills, addSkill, editSkill, listSkill } from "../../api/admin";
 import {
   Button,
   IconButton,
@@ -15,11 +16,12 @@ import {
   Box,
   TablePagination,
 } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+import { Edit, Visibility, VisibilityOff } from "@mui/icons-material";
 
 interface Skill {
-  id: number;
+  _id?: string; // Make id optional since it won't exist for new skills
   name: string;
+  isListed: boolean; // New property for listing status
 }
 
 const SkillManagement: React.FC = () => {
@@ -36,19 +38,15 @@ const SkillManagement: React.FC = () => {
   const fetchSkills = async () => {
     try {
       const response = await getAllSkills();
-      console.log(response.data.skill, "this is the response");
-      setSkills(response.data.skill);
+      setSkills(response.data.skills);
     } catch (err) {
-      console.log(err);
+      console.error("Error fetching skills:", err);
     }
   };
 
   const handleOpenModal = (skill?: Skill) => {
-    if (skill) {
-      setCurrentSkill(skill);
-    } else {
-      setCurrentSkill({ id: skills.length + 1, name: "" });
-    }
+    // Initialize currentSkill as an empty object if adding a new skill
+    setCurrentSkill(skill || { name: "", isListed: true });
     setOpenModal(true);
   };
 
@@ -57,26 +55,48 @@ const SkillManagement: React.FC = () => {
     setCurrentSkill(null);
   };
 
-  const handleAddEditSkill = () => {
+  const handleAddEditSkill = async () => {
     if (currentSkill) {
-      setSkills((prevSkills) => {
-        const skillExists = prevSkills.some(
-          (skill) => skill.id === currentSkill.id
-        );
-        if (skillExists) {
-          return prevSkills.map((skill) =>
-            skill.id === currentSkill.id ? currentSkill : skill
-          );
+      try {
+        if (!currentSkill?._id) {
+          const res = await addSkill(currentSkill.name);
+          if (res.status) {
+            toast.success("Skill added successfully");
+          }
         } else {
-          return [...prevSkills, currentSkill];
+          // Update existing skill
+          const res = await editSkill(currentSkill._id, currentSkill.name);
+          console.log("edited name", currentSkill.name)
+          
+          if(res.status)toast.success("Skill updated successfully");
         }
-      });
+        fetchSkills(); // Refresh the skill list after add/edit
+      } catch (err) {
+        
+        if(err instanceof Error){
+          toast.error(err.message || "An error occurred while adding the skill.");
+        }
+
+        console.error("Error adding/updating skill:", err);
+      }
     }
     handleCloseModal();
   };
 
-  const handleDeleteSkill = (id: number) => {
-    setSkills(skills.filter((skill) => skill.id !== id));
+  const handleListSkill = async (skillId: string, skillStatus: boolean) => {
+    try {
+      console.log("skillId:", skillId , "skillSTatus: ", skillStatus);
+      
+      const res = await listSkill(skillId, !skillStatus);
+      console.log(res, "res from list")
+      
+      if(res?.data.status)toast.success(
+        `Skill ${res?.data.skill.isListed ? "unlisted" : "listed"} successfully`
+      );
+      fetchSkills(); // Refresh the skill list after delete
+    } catch (err) {
+      console.error("Error deleting skill:", err);
+    }
   };
 
   const handleChangePage = (
@@ -112,6 +132,7 @@ const SkillManagement: React.FC = () => {
             <TableRow>
               <TableCell>Index</TableCell>
               <TableCell align="center">Skill Name</TableCell>
+              <TableCell align="right">Listed</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -120,12 +141,15 @@ const SkillManagement: React.FC = () => {
               skills
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((skill, index) => (
-                  <TableRow key={skill.id}>
+                  <TableRow key={skill._id}>
                     <TableCell style={{ color: "#ffffff" }}>
                       {page * rowsPerPage + index + 1}
                     </TableCell>
                     <TableCell align="center" style={{ color: "#ffffff" }}>
                       {skill.name}
+                    </TableCell>
+                    <TableCell align="right" style={{ color: "#ffffff" }}>
+                      {skill.isListed ? "True" : "False"}
                     </TableCell>
                     <TableCell align="right">
                       <IconButton
@@ -136,9 +160,15 @@ const SkillManagement: React.FC = () => {
                       </IconButton>
                       <IconButton
                         color="inherit"
-                        onClick={() => handleDeleteSkill(skill.id)}
+                        onClick={() =>
+                          handleListSkill(skill._id!, skill.isListed)
+                        }
                       >
-                        <Delete style={{ color: "#6b7280" }} />
+                        {skill.isListed ? (
+                          <VisibilityOff style={{ color: "#6b7280" }} />
+                        ) : (
+                          <Visibility style={{ color: "#6b7280" }} />
+                        )}
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -146,7 +176,7 @@ const SkillManagement: React.FC = () => {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={3}
+                  colSpan={4}
                   align="center"
                   style={{ color: "#ffffff" }}
                 >
@@ -187,13 +217,15 @@ const SkillManagement: React.FC = () => {
             borderRadius: 2,
           }}
         >
-          <h2>{currentSkill?.id ? "Edit Skill" : "Add Skill"}</h2>
+          <h2>{currentSkill?._id ? "Edit Skill" : "Add Skill"}</h2>
           <TextField
             label="Skill Name"
             value={currentSkill?.name || ""}
             onChange={(e) =>
               setCurrentSkill((prev) =>
-                prev ? { ...prev, name: e.target.value } : null
+                prev
+                  ? { ...prev, name: e.target.value }
+                  : { name: e.target.value, isListed: true }
               )
             }
             fullWidth
@@ -207,7 +239,7 @@ const SkillManagement: React.FC = () => {
             style={{ backgroundColor: "#6b7280", marginTop: "16px" }} // Tailwind color equivalent
             fullWidth
           >
-            {currentSkill?.id ? "Update Skill" : "Add Skill"}
+            {currentSkill?._id ? "Update Skill" : "Add Skill"}
           </Button>
         </Box>
       </Modal>

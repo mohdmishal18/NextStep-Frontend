@@ -7,7 +7,7 @@ const adminRoutes = {
     getSkills: '/admin/get-skills',
     addSkill: '/admin/add-skill',
     editSkill: '/admin/edit-skill',
-    unListSkill: '/admin/unListSkill',
+    listSkill: '/admin/list-skill',
 
     //mentee
     getMentees: '/admin/get-mentees',

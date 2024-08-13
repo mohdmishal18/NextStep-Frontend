@@ -42,6 +42,17 @@ export const Logout = async () => {
 
 //SKILL management
 
+//add skill
+export const addSkill = async (name: string) => {
+  try {
+    return await API.post(adminRoutes.addSkill, {name})
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+}
+
 //get skills
 export const getAllSkills = async () => {
   
@@ -53,3 +64,25 @@ export const getAllSkills = async () => {
     throw err; // Re-throw the error after handling it
   }
 }
+
+// Edit Skill
+export const editSkill = async (id: string, name: string) => {
+  try {
+    return await API.patch(adminRoutes.editSkill, {id, name});
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+};
+
+// Delete Skill
+export const listSkill = async (id: string, status: boolean) => {
+  try {
+    return await API.patch(adminRoutes.listSkill, { id, status});
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+};

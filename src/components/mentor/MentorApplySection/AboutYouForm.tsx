@@ -7,7 +7,7 @@ import { RiEyeCloseFill } from "react-icons/ri";
 
 interface AboutYouFormProps {
   onSubmit: (data: Partial<MentorApplicationData>) => void;
-  formData: Partial<MentorApplicationData>; // Added prop
+  formData: Partial<MentorApplicationData>;
 }
 
 const AboutYouForm: React.FC<AboutYouFormProps> = ({ onSubmit, formData }) => {
@@ -16,28 +16,55 @@ const AboutYouForm: React.FC<AboutYouFormProps> = ({ onSubmit, formData }) => {
     handleSubmit,
     watch,
     formState: { errors },
+    setValue,
+    clearErrors,
   } = useForm<Partial<MentorApplicationData>>({
-    defaultValues: formData, // Set default values to the current form data
+    defaultValues: formData,
   });
-  const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(
-    null
-  );
 
-  const password = watch("password");
+  const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+
     if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        setImageError("File size should not exceed 2MB");
+        setImagePreview(null);
+        setValue("profilePicture", undefined);
+        return;
+      }
+
+      const allowedTypes = ["image/jpeg", "image/png"];
+      if (!allowedTypes.includes(file.type)) {
+        setImageError("Unsupported file type");
+        setImagePreview(null);
+        setValue("profilePicture", undefined);
+        return;
+      }
+
+      setImageError(null);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result);
+        setImagePreview(reader.result as string | ArrayBuffer);
+        setValue("profilePicture", file);
+        clearErrors("profilePicture");
       };
       reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+      setValue("profilePicture", undefined);
+      setImageError("Profile picture is required");
     }
   };
 
   const submitForm: SubmitHandler<Partial<MentorApplicationData>> = (data) => {
+    if (!data.profilePicture) {
+      setImageError("Profile picture is required");
+      return;
+    }
     onSubmit(data);
   };
 
@@ -51,7 +78,6 @@ const AboutYouForm: React.FC<AboutYouFormProps> = ({ onSubmit, formData }) => {
           <input
             id="profilePicture"
             type="file"
-            {...register("profilePicture")}
             onChange={handleFileChange}
             className="absolute inset-0 opacity-0 cursor-pointer"
           />
@@ -63,13 +89,24 @@ const AboutYouForm: React.FC<AboutYouFormProps> = ({ onSubmit, formData }) => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              ""
+              <span className="text-gray-500">Profile</span>
             )}
           </div>
+          {imageError && (
+            <p className="text-red-600 text-xs mt-1">
+              {imageError}
+            </p>
+          )}
+          {!imageError && errors.profilePicture && (
+            <p className="text-red-600 text-xs mt-1">
+              {errors.profilePicture.message}
+            </p>
+          )}
         </div>
         <button
           type="button"
           className="px-4 py-2 bg-blue text-white rounded hover:bg-blue-600"
+          onClick={() => document.getElementById("profilePicture")?.click()}
         >
           Upload Photo
         </button>
@@ -183,7 +220,7 @@ const AboutYouForm: React.FC<AboutYouFormProps> = ({ onSubmit, formData }) => {
       <div className="self-end mt-4">
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="px-4 py-2 bg-blue text-white rounded hover:bg-blue-600"
         >
           Next
         </button>

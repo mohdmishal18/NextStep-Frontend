@@ -29,4 +29,4 @@ export interface MentorApplicationData {
     personalWebsiteUrl?: string;
     whyBecomeMentor: string;
     greatestAchievement: string;
-  }
+}
