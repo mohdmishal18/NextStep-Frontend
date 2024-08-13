@@ -9,17 +9,20 @@ interface FinalFormProps {
   formData: Partial<MentorApplicationData>;
 }
 
-const FinalForm: React.FC<FinalFormProps> = ({ onSubmit, onPrevious, formData }) => {
+const FinalForm: React.FC<FinalFormProps> = ({
+  onSubmit,
+  onPrevious,
+  formData,
+}) => {
   const { register, handleSubmit, formState: { errors }, reset, getValues } = useForm<MentorApplicationData>({
     defaultValues: formData as MentorApplicationData,
   });
 
   useEffect(() => {
-    reset(formData as MentorApplicationData);
+    reset(formData); // Reset form data when formData changes
   }, [formData, reset]);
 
   const submitForm: SubmitHandler<MentorApplicationData> = (data) => {
-    console.log(data, "final data");
     onSubmit(data);
   };
 
@@ -31,15 +34,15 @@ const FinalForm: React.FC<FinalFormProps> = ({ onSubmit, onPrevious, formData })
   return (
     <form onSubmit={handleSubmit(submitForm)} className="space-y-4">
       <SignupInputField
-        label="Why do you want to become a mentor? (optional) "
-        placeholder="Tell us why you want to become a mentor "
+        label="Why do you want to become a mentor? (optional)"
+        placeholder="Tell us why you want to become a mentor"
         type="textarea"
         register={register("whyBecomeMentor")}
         error={errors.whyBecomeMentor}
       />
 
       <SignupInputField
-        label="What, in your opinion, has been your greatest achievement so far?(optional)"
+        label="What, in your opinion, has been your greatest achievement so far? (optional)"
         placeholder="Describe your greatest achievement"
         type="textarea"
         register={register("greatestAchievement")}

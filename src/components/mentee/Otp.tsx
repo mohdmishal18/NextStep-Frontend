@@ -146,7 +146,7 @@ const Otp: React.FC = () => {
                   <input
                     name={value}
                     type="text"
-                    pattern="/d*"
+                    pattern="\d*"
                     maxLength={1}
                     className="w-full h-full bg-[#333333] text-white border-none rounded-md text-center text-2xl focus:outline-none focus:shadow-lg focus:shadow-blue-500"
                     aria-label={`Digit ${index + 1} of authentication code`}
@@ -155,6 +155,13 @@ const Otp: React.FC = () => {
                       if (element) otpInputRef.current[index] = element;
                     }}
                     onKeyUp={(e) => handleInputKeyUp(e, index)}
+                    inputMode="numeric"
+                    onInput={(e) => {
+                      const target = e.target as HTMLInputElement;
+                      if (!/^\d*$/.test(target.value)) {
+                        target.value = target.value.replace(/\D/g, "");
+                      }
+                    }}
                   />
                 </div>
               ))}

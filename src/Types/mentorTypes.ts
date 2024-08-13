@@ -23,10 +23,10 @@ export interface MentorApplicationData {
     company: string;
     location: string;
     category: string;
-    skills: string;
+    skills?: string[];
     bio: string;
     linkedInUrl: string;
     personalWebsiteUrl?: string;
-    whyBecomeMentor: string;
-    greatestAchievement: string;
+    whyBecomeMentor?: string;
+    greatestAchievement?: string;
 }

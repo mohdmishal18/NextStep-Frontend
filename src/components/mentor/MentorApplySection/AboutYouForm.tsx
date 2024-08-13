@@ -14,7 +14,6 @@ const AboutYouForm: React.FC<AboutYouFormProps> = ({ onSubmit, formData }) => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
     setValue,
     clearErrors,
@@ -60,13 +59,37 @@ const AboutYouForm: React.FC<AboutYouFormProps> = ({ onSubmit, formData }) => {
     }
   };
 
+  const trimTextFields = (data: Partial<MentorApplicationData>) => {
+    const result: Record<string, any> = { ...data };
+  
+    for (const key in result) {
+      if (typeof result[key] === 'string') {
+        result[key] = result[key].trim();
+      }
+    }
+    return result;
+  };
+
   const submitForm: SubmitHandler<Partial<MentorApplicationData>> = (data) => {
-    if (!data.profilePicture) {
+    const trimmedData = trimTextFields(data);
+  
+    if (!trimmedData.profilePicture) {
       setImageError("Profile picture is required");
       return;
     }
-    onSubmit(data);
+  
+    // Ensure no fields are empty or contain only whitespace
+    for (const [key, value] of Object.entries(trimmedData)) {
+      // Type guard to ensure `value` is defined
+      if (typeof value === 'string' && value.trim() === "") {
+        setValue(key as keyof MentorApplicationData, "", { shouldValidate: true });
+        return;
+      }
+    }
+  
+    onSubmit(trimmedData);
   };
+
 
   return (
     <form
@@ -120,6 +143,7 @@ const AboutYouForm: React.FC<AboutYouFormProps> = ({ onSubmit, formData }) => {
             type="text"
             register={register("firstName", {
               required: "First name is required",
+              validate: (value) => value?.trim() !== "" || "First name cannot be empty or whitespace only",
             })}
             error={errors.firstName}
           />
@@ -131,6 +155,7 @@ const AboutYouForm: React.FC<AboutYouFormProps> = ({ onSubmit, formData }) => {
             type="text"
             register={register("lastName", {
               required: "Last name is required",
+              validate: (value) => value?.trim() !== "" || "Last name cannot be empty or whitespace only",
             })}
             error={errors.lastName}
           />
@@ -145,6 +170,7 @@ const AboutYouForm: React.FC<AboutYouFormProps> = ({ onSubmit, formData }) => {
             type="email"
             register={register("email", {
               required: "Email is required",
+              validate: (value) => value?.trim() !== "" || "Email cannot be empty or whitespace only",
             })}
             error={errors.email}
           />
@@ -165,6 +191,7 @@ const AboutYouForm: React.FC<AboutYouFormProps> = ({ onSubmit, formData }) => {
                 message:
                   "Password must contain at least one uppercase letter and one special character",
               },
+              validate: (value) => value?.trim() !== "" || "Password cannot be empty or whitespace only",
             })}
             error={errors.password}
             icon={
@@ -188,6 +215,7 @@ const AboutYouForm: React.FC<AboutYouFormProps> = ({ onSubmit, formData }) => {
             type="text"
             register={register("jobTitle", {
               required: "Job title is required",
+              validate: (value) => value?.trim() !== "" || "Job title cannot be empty or whitespace only",
             })}
             error={errors.jobTitle}
           />
@@ -199,6 +227,7 @@ const AboutYouForm: React.FC<AboutYouFormProps> = ({ onSubmit, formData }) => {
             type="text"
             register={register("company", {
               required: "Company is required",
+              validate: (value) => value?.trim() !== "" || "Company cannot be empty or whitespace only",
             })}
             error={errors.company}
           />
@@ -212,6 +241,7 @@ const AboutYouForm: React.FC<AboutYouFormProps> = ({ onSubmit, formData }) => {
           type="text"
           register={register("location", {
             required: "Location is required",
+            validate: (value) => value?.trim() !== "" || "Location cannot be empty or whitespace only",
           })}
           error={errors.location}
         />

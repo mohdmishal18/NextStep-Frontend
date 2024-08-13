@@ -25,12 +25,14 @@ const MentorApply: React.FC = () => {
     console.log("Final Submission Data:", finalData);
 
     try {
-      const formData = new FormData();
+      const formDataToSubmit = new FormData();
       for (const key in finalData) {
-        formData.append(key, (finalData as any)[key]);
+        if (finalData.hasOwnProperty(key)) {
+          formDataToSubmit.append(key, (finalData as any)[key]);
+        }
       }
 
-      const response = await axios.post("/api/mentor-apply", formData);
+      const response = await axios.post("/api/mentor-apply", formDataToSubmit);
       if (response.data.success) {
         toast.success("Application submitted successfully");
       } else {
