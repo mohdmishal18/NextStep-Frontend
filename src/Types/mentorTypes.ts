@@ -13,6 +13,28 @@
 //     profilePicture?: File; 
 // }
 
+export interface MentorData {
+    _id: string;
+    profilePicture: string;
+    coverPicture?: string;
+    firstName: string
+    lastName: string;
+    password: string;
+    email: string;
+    jobTitle: string;
+    company: string;
+    location: string;
+    skills: string;
+    bio: string;
+    linkedInUrl: string;
+    personalWebsiteUrl?: string;
+    whyBecomeMentor: string;
+    greatestAchievement: string;
+    isApproved: boolean;
+    __v: number;
+}
+
+
 export interface MentorApplicationData {
     profilePicture: File | string;
     firstName: string
@@ -22,7 +44,7 @@ export interface MentorApplicationData {
     jobTitle: string;
     company: string;
     location: string;
-    category: string;
+    // category: string;
     skills?: string[];
     bio: string;
     linkedInUrl: string;

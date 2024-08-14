@@ -10,6 +10,7 @@ import SettingsContent from '../components/admin/Settings/SettingsContent';
 import DashboardPage from '../pages/admin/DashboardPage';
 import SkillManagementPage from '../pages/admin/SkillManagementPage';
 import LoginPage from '../pages/admin/LoginPage';
+import MentorApplicationsPage from '../pages/admin/MentorApplicationsPage';
 
 const AdminRoutes = () => {
   return (
@@ -18,7 +19,7 @@ const AdminRoutes = () => {
        <Route path="/" element={<Layout />}>
             <Route index element={<DashboardPage />} />
             <Route path='skills' element={<SkillManagementPage />} />
-
+            <Route path='mentor-applications' element={<MentorApplicationsPage/>}/>
             <Route path="settings" element={<SettingsContent/>}>
 
             </Route>

@@ -110,7 +110,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onSubmit, onPrevious, formDat
       </div>
 
       {/* Other Form Fields */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      {/* <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-grow">
           <SignupInputField
             label="Category"
@@ -133,7 +133,16 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ onSubmit, onPrevious, formDat
             error={errors.bio}
           />
         </div>
-      </div>
+      </div> */}
+      <SignupInputField
+            label="Bio"
+            placeholder="Enter your bio"
+            type="text"
+            register={register("bio", {
+              required: "Bio is required",
+            })}
+            error={errors.bio}
+          />
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-grow">
           <SignupInputField

@@ -38,6 +38,8 @@ const SkillManagement: React.FC = () => {
   const fetchSkills = async () => {
     try {
       const response = await getAllSkills();
+      console.log("skills frm back", response.data.skills);
+      
       setSkills(response.data.skills);
     } catch (err) {
       console.error("Error fetching skills:", err);

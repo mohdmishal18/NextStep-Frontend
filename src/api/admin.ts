@@ -86,3 +86,16 @@ export const listSkill = async (id: string, status: boolean) => {
     throw err; // Re-throw the error after handling it
   }
 };
+
+// Mentor Management
+
+//get all application
+export const getAllApplication = async () => {
+  try {
+    return await API.get(adminRoutes.getApplications)
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+}

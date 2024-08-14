@@ -12,6 +12,7 @@ import HomePage from "../pages/common/HomePage";
 
 import Navbar from "../components/common/Navbar";
 import { Outlet } from "react-router-dom";
+import ApplySuccess from "../components/mentor/MentorApplySection/ApplySuccess";
 
 const AuthLayout = () => (
   <>
@@ -28,6 +29,7 @@ const AuthRoutes = () => {
         <Route path="login" element={<ProtectLogin><Login /></ProtectLogin>} />
         <Route path="signup" element={<ProtectLogin><SignUp /></ProtectLogin>} />
         <Route path="mentorApply" element={<ProtectLogin><MentorApplyPage/></ProtectLogin>}/>
+        <Route path="/applySuccess" element={<ApplySuccess/>}/>
         <Route path="verifyOtp" element={<ProtectLogin><OtpPage/></ProtectLogin>}/>
       </Route>
     </Routes>

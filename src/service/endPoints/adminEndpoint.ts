@@ -16,6 +16,7 @@ const adminRoutes = {
     //mentor
     getMentor: '/admin/get-mentors',
     blockMentor: '/admin/block-mentor',
+    getApplications: '/admin/all-applications'
 
 }
 
