@@ -24,7 +24,7 @@ export interface MentorData {
     jobTitle: string;
     company: string;
     location: string;
-    skills: string;
+    skills: { name: string }[]
     bio: string;
     linkedInUrl: string;
     personalWebsiteUrl?: string;
