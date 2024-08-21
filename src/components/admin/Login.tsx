@@ -1,34 +1,34 @@
-import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
-import { jwtDecode, JwtPayload } from "jwt-decode";
+// import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+// import { jwtDecode, JwtPayload } from "jwt-decode";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { adminLogin } from "../../store/slices/adminAuthSlice";
-import { googleAuthLogin } from "../../api/admin";
+// import { googleAuthLogin } from "../../api/admin";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { RiEyeCloseFill } from "react-icons/ri";
 import { FaEye } from "react-icons/fa";
 import axios from "axios";
 import { signIn } from "../../api/admin";
 import SignupInputField from "../common/SignupInputField";
 
-interface CredentialPayload extends JwtPayload {
-  iss: string;
-  azp: string;
-  aud: string;
-  sub: string;
-  email: string;
-  email_verified: boolean;
-  exp: number;
-  family_name: string;
-  given_name: string;
-  iat: number;
-  jti: string;
-  name: string;
-  nbf: number;
-  picture: string;
-}
+// interface CredentialPayload extends JwtPayload {
+//   iss: string;
+//   azp: string;
+//   aud: string;
+//   sub: string;
+//   email: string;
+//   email_verified: boolean;
+//   exp: number;
+//   family_name: string;
+//   given_name: string;
+//   iat: number;
+//   jti: string;
+//   name: string;
+//   nbf: number;
+//   picture: string;
+// }
 
 interface LoginFormData {
   email: string;
@@ -69,34 +69,34 @@ const Login: React.FC = () => {
     }
   };
 
-  const googleLogin = async (response: CredentialResponse) => {
-    try {
-      const credentails: CredentialPayload = jwtDecode(
-        response.credential as string
-      );
-      const googleLoginResponse = await googleAuthLogin(
-        credentails.name,
-        credentails.email,
-        credentails.picture
-      );
-      if (
-        googleLoginResponse.data.message == "google Login succesfull" &&
-        googleLoginResponse.data.status
-      ) {
-        console.log(googleLoginResponse);
+  // const googleLogin = async (response: CredentialResponse) => {
+  //   try {
+  //     const credentails: CredentialPayload = jwtDecode(
+  //       response.credential as string
+  //     );
+  //     const googleLoginResponse = await googleAuthLogin(
+  //       credentails.name,
+  //       credentails.email,
+  //       credentails.picture
+  //     );
+  //     if (
+  //       googleLoginResponse.data.message == "google Login succesfull" &&
+  //       googleLoginResponse.data.status
+  //     ) {
+  //       console.log(googleLoginResponse);
 
-        dispatch(adminLogin(googleLoginResponse.data.loginUser));
-        navigate("/mentee");
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (!error.response?.data.status) {
-          toast.error(error.response?.data.message);
-        }
-      }
-      console.log(error);
-    }
-  };
+  //       dispatch(adminLogin(googleLoginResponse.data.loginUser));
+  //       navigate("/mentee");
+  //     }
+  //   } catch (error) {
+  //     if (axios.isAxiosError(error)) {
+  //       if (!error.response?.data.status) {
+  //         toast.error(error.response?.data.message);
+  //       }
+  //     }
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <div className="flex flex-col w-6/12 max-md:ml-0 max-md:w-full">
@@ -146,7 +146,7 @@ const Login: React.FC = () => {
             >
               Log In
             </button>
-            <div className="relative flex justify-center items-center">
+            {/* <div className="relative flex justify-center items-center">
               <div
               style={{
                 position: "absolute",
@@ -177,7 +177,7 @@ const Login: React.FC = () => {
                   <span className="text-white">Continue with Google</span>
                 </div>
               </button>
-            </div>
+            </div> */}
           </div>
         </form>
       </div>

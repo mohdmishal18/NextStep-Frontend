@@ -4,7 +4,7 @@ import axios from "axios";
 
 import { useDispatch, useSelector } from "react-redux";
 import { rootState } from "../../store/store";
-import { MenteeProfile } from "../../Types/menteeTypes";
+import { MentorData } from "../../Types/mentorTypes";
 import { menteeLogin } from "../../store/slices/menteeAuthSlice";
 import { editPictures } from "../../api/mentee";
 import { FaEdit } from "react-icons/fa";
@@ -16,8 +16,8 @@ type UploadImageResponse = {
 
 const ProfileHeader: React.FC = () => {
   
-  const mentee: MenteeProfile | null = useSelector(
-    (state: rootState) => state.mentee.menteeData
+  const mentor: MentorData | null = useSelector(
+    (state: rootState) => state.mentor.mentorData
   );
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [previewProfileImage, setPreviewProfileImage] = useState<string | null>(
@@ -108,7 +108,7 @@ const ProfileHeader: React.FC = () => {
         const responseUrl = await uploadImage(profileImage, bannerImage);
         console.log(responseUrl, " this is the two urls");
 
-        const email = mentee?.email!
+        const email = mentor?.email!
         const profilePic = responseUrl?.profileUrl
         const coverPic = responseUrl?.coverUrl
   
@@ -148,7 +148,7 @@ const ProfileHeader: React.FC = () => {
         <div className="flex flex-col items-start px-5 pt-20 w-full rounded-xl min-h-[250px] max-md:pr-5 max-md:max-w-full">
           <img
             loading="lazy"
-            src={previewBannerImage || mentee?.coverPicture || "/placeeHolderProfile.jpg"}
+            src={previewBannerImage || mentor?.coverPicture || "/placeeHolderProfile.jpg"}
             alt="Profile background"
             className="object-cover absolute inset-0 w-full h-full rounded-xl"
           />
@@ -165,7 +165,7 @@ const ProfileHeader: React.FC = () => {
           <div className="flex gap-5 max-md:flex-col">
             <div className="flex flex-col w-[84%] max-md:ml-0 max-md:w-full">
               <div className="mt-16 flex flex-col grow items-start font-light text-sky-50 max-md:mt-10 max-md:max-w-full">
-                <h2 className="ml-5 text-3xl max-md:ml-2.5">{mentee?.name}</h2>
+                <h2 className="ml-5 text-3xl max-md:ml-2.5">{`${mentor?.firstName} ${mentor?.lastName}`}</h2>
                 <div className="flex gap-4 px-5 py-2.5 mt-3.5 whitespace-nowrap rounded-xl bg-zinc-900">
                   <div className="flex flex-col">
                     <div className="text-xl">13</div>
@@ -182,7 +182,7 @@ const ProfileHeader: React.FC = () => {
                   </div>
                 </div>
                 <p className="self-stretch mt-5 text-sm leading-3 text-white max-md:max-w-full">
-                  {mentee?.bio}
+                  {mentor?.bio}
                 </p>
               </div>
             </div>
@@ -198,7 +198,7 @@ const ProfileHeader: React.FC = () => {
         <div className="absolute left-10 top-40 z-10 w-44 h-44 rounded-full border-[5px] border-zinc-900 object-cover">
           <img
             loading="lazy"
-            src={previewProfileImage || mentee?.profilePicture || "/placeeHolderProfile.jpg"}
+            src={previewProfileImage || mentor?.profilePicture || "/placeeHolderProfile.jpg"}
             alt="Profile picture"
             className="w-full h-full rounded-full object-cover"
           />

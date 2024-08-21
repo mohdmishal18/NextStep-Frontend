@@ -6,7 +6,7 @@ import { PersistPartial } from "redux-persist/es/persistReducer";
 
 import menteeReducer, { MenteeState } from './slices/menteeAuthSlice'
 import mentorReducer, { MentorState } from './slices/mentorAuthSlice'
-
+import adminReducer, { AdminState } from "./slices/adminAuthSlice";
 
 
 const menteePersistConfig = {
@@ -19,18 +19,25 @@ const mentorPersistConfig = {
     storage
 }
 
+const adminPersistConfig = {
+  key: 'admin',
+  storage
+}
+
 const persistedMenteeReducer = persistReducer(menteePersistConfig, menteeReducer);
 const persistedMentorReducer = persistReducer(mentorPersistConfig, mentorReducer)
+const persistedAdminReducer = persistReducer(adminPersistConfig, adminReducer)
 
 const AllReducers = combineReducers({
     mentee :  persistedMenteeReducer,
-    mentor : persistedMentorReducer
+    mentor : persistedMentorReducer,
+    admin  : persistedAdminReducer
 })
 
 export type rootState = {
     mentee: MenteeState & PersistPartial; 
     mentor: MentorState & PersistPartial; 
-    // admin: AdminState & PersistPartial; 
+    admin: AdminState & PersistPartial; 
   };
 
 const store = configureStore({

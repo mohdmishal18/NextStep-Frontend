@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MentorData } from "../../Types/mentorTypes";
-import { approveMentor, rejectMentor } from "../../api/admin";
-import { getAllApplication } from "../../api/admin";
-import { blockMentor } from "../../api/admin";
+import { getApprovedMentors } from "../../api/admin";
 import {
   Button,
   IconButton,
@@ -20,7 +18,7 @@ import {
 } from "@mui/material";
 import { Visibility } from "@mui/icons-material";
 
-const MentorApplications: React.FC = () => {
+const MentorManagement: React.FC = () => {
   const [mentors, setMentors] = useState<MentorData[]>([]);
   const [currentMentor, setCurrentMentor] = useState<MentorData | null>(null);
   const [openModal, setOpenModal] = useState(false);
@@ -28,31 +26,18 @@ const MentorApplications: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    fetchApplications();
+    fetchApprovedMentors();
   }, []);
 
-  const fetchApplications = async () => {
+  const fetchApprovedMentors = async () => {
     try {
-      const response = await getAllApplication();
-      setMentors(response.data.mentors);
-      console.log(response.data.mentors);
+      const response = await getApprovedMentors();
+      setMentors(response.data.approvedMentors);
+      console.log(response.data.approvedMentors);
     } catch (err) {
-      console.error("Error fetching mentors:", err);
+      console.error("Error fetching approved mentors:", err);
     }
   };
-
-  const handleApprove = async (id: string , status: string) => {
-    try {
-      const response = await approveMentor(id, status)
-      
-      console.log(response.data);
-      fetchApplications();
-      handleCloseModal()
-      
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   const handleOpenModal = (mentor: MentorData) => {
     setCurrentMentor(mentor);
@@ -78,10 +63,25 @@ const MentorApplications: React.FC = () => {
     setPage(0);
   };
 
+//   const handleBlockUnblock = async (mentor: MentorData) => {
+//     try {
+//       if (mentor.isBlocked) {
+//         await unblockMentor(mentor._id);
+//         console.log(`Unblocked mentor: ${mentor.firstName}`);
+//       } else {
+//         await blockMentor(mentor._id);
+//         console.log(`Blocked mentor: ${mentor.firstName}`);
+//       }
+//       fetchApprovedMentors();
+//     } catch (err) {
+//       console.error("Error blocking/unblocking mentor:", err);
+//     }
+//   };
+
   return (
     <div className="flex flex-col p-8 bg-zinc-900 rounded-[60px] mt-8">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-white text-3xl">Mentor Applications</h2>
+        <h2 className="text-white text-3xl">Mentor Management</h2>
       </div>
 
       <TableContainer component={Paper}>
@@ -93,7 +93,6 @@ const MentorApplications: React.FC = () => {
               <TableCell align="center">Name</TableCell>
               <TableCell align="center">Email</TableCell>
               <TableCell align="center">Location</TableCell>
-              <TableCell align="center">Status</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -121,9 +120,6 @@ const MentorApplications: React.FC = () => {
                     <TableCell align="center" style={{ color: "#ffffff" }}>
                       {mentor.location}
                     </TableCell>
-                    <TableCell align="center" style={{ color: "#ffffff" }}>
-                      {mentor.status}
-                    </TableCell>
                     <TableCell align="right">
                       <IconButton
                         color="inherit"
@@ -131,17 +127,25 @@ const MentorApplications: React.FC = () => {
                       >
                         <Visibility style={{ color: "#6b7280" }} />
                       </IconButton>
+                      <Button
+                        variant="contained"
+                        color={mentor.isBlocked ? "success" : "error"}
+                        // onClick={() => handleBlockUnblock(mentor)}
+                        className="ml-2"
+                      >
+                        {mentor.isBlocked ? "Unblock" : "Block"}
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={6}
                   align="center"
                   style={{ color: "#ffffff" }}
                 >
-                  No mentor applications available.
+                  No mentors available.
                 </TableCell>
               </TableRow>
             )}
@@ -204,14 +208,6 @@ const MentorApplications: React.FC = () => {
                   <p><strong>Greatest Achievement:</strong> {currentMentor.greatestAchievement}</p>
                   <p><strong>Status:</strong> {currentMentor.status}</p>
                 </div>
-                <div className="flex justify-end gap-4 mt-4">
-                  <Button variant="contained" color="success" onClick={() => handleApprove(currentMentor._id, "approved")}>
-                    Approve
-                  </Button>
-                  {/* <Button variant="contained" color="error">
-                    Reject
-                  </Button> */}
-                </div>
               </div>
             </>
           )}
@@ -221,4 +217,4 @@ const MentorApplications: React.FC = () => {
   );
 };
 
-export default MentorApplications;
+export default MentorManagement;

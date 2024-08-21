@@ -1,6 +1,6 @@
 export const mentorRoutes = {
     Apply: '/mentor/mentor-apply',
-    Signin: '/mentor/signin',
+    Signin: '/mentor/login',
     googleAuth: "/mentor/google-login",
     logout: 'mentor/logout',
     EditPictures: '/mentor/edit-picture',

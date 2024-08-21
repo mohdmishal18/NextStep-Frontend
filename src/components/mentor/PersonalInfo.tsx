@@ -1,142 +1,170 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
-import { menteeLogin } from '../../store/slices/menteeAuthSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import { mentorLogin } from '../../store/slices/mentorAuthSlice';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-import { MenteeProfile } from '../../Types/menteeTypes';
+import { MentorData } from '../../Types/mentorTypes';
 import { rootState } from '../../store/store';
-import { editDetails } from '../../api/mentee';
+// import { editDetails } from '../../api/mentor';
 
 interface PersonalInfoForm {
-  fullName: string;
-  phone: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  education: string;
+  jobTitle: string;
+  company: string;
+  location: string;
   bio: string;
+  linkedInUrl: string;
+  personalWebsiteUrl: string;
 }
 
 const PersonalInfo: React.FC = () => {
-  const mentee: MenteeProfile | null = useSelector(
-    (state: rootState) => state.mentee.menteeData
+  const mentor: MentorData | null = useSelector(
+    (state: rootState) => state.mentor.mentorData
   );
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<PersonalInfoForm>();
 
   useEffect(() => {
-    if (mentee) {
-      setValue("fullName", mentee.name);
-      setValue("phone", mentee.phone);
-      setValue("education", mentee.education);
-      setValue("bio", mentee.bio);
+    if (mentor) {
+      setValue("firstName", mentor.firstName);
+      setValue("lastName", mentor.lastName);
+      setValue("jobTitle", mentor.jobTitle);
+      setValue("company", mentor.company);
+      setValue("location", mentor.location);
+      setValue("bio", mentor.bio);
+      setValue("linkedInUrl", mentor.linkedInUrl);
+      setValue("personalWebsiteUrl", mentor.personalWebsiteUrl);
     }
-  }, [mentee, setValue]);
-
-  const validateMobileNumber = (value: string): true | string => {
-    if (!value) return "Mobile number is required";
-    const phoneNumber = parseInt(value, 10);
-    if (isNaN(phoneNumber)) return "Mobile number must be numeric";
-    if (value.length !== 10) return "Mobile number must be exactly 10 digits";
-    return true;
-  };
+  }, [mentor, setValue]);
 
   const onSubmit: SubmitHandler<PersonalInfoForm> = async (data) => {
-
     try {
-      const name = data.fullName
-      const phone = data.phone
-      const bio = data.bio
-      const education = data.education
-      const email = mentee?.email!
-
-      const response = await editDetails(
-        name,
-        phone,
+      const {
+        firstName,
+        lastName,
+        jobTitle,
+        company,
+        location,
         bio,
-        education,
-        email
-      )
+        linkedInUrl,
+        personalWebsiteUrl,
+      } = data;
 
-      console.log(response, "res from edit mentee details")
-      
+      const email = mentor?.email!;
+
+      const response = await editDetails({
+        firstName,
+        lastName,
+        jobTitle,
+        company,
+        location,
+        bio,
+        linkedInUrl,
+        personalWebsiteUrl,
+        email
+      });
+
       if (response && response.status && response.user) {
-        dispatch(menteeLogin(response.user));
-        toast.success("profile updated successfully")
+        dispatch(mentorLogin(response.user));
+        toast.success("Profile updated successfully");
       } else {
         toast.error("Failed to update profile. Please try again.");
       }
     } catch (error) {
-      // Handle the error
-      console.error("Error uploading images", error);
-      toast.error("An error occurred while uploading images.");
+      console.error("Error updating details", error);
+      toast.error("An error occurred while updating the details.");
     }
   };
 
   return (
-    <section className="flex flex-col items-start pt-3 pr-3 pb-14 pl-6 mt-24 rounded-xl bg-zinc-800 max-md:pl-5 max-md:mt-10 max-md:max-w-full">
+    <section className="flex flex-col items-start pt-3 pr-3 pb-8 pl-6 mt-6 rounded-xl bg-zinc-800 max-md:pl-5 max-md:mt-10 max-md:max-w-full">
       <div className="flex flex-col max-w-full w-full">
         <h2 className="text-2xl text-white mb-6">Personal Information</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col w-full">
-          <div className="flex flex-col sm:flex-row justify-between w-full">
-            <div className="flex flex-col w-full sm:w-1/2 mb-6 sm:mb-0 pr-3">
-              <h3 className="text-lg text-zinc-500">Full Name</h3>
+          <div className="flex flex-col sm:flex-row justify-between w-full mb-6">
+            <div className="flex flex-col w-full sm:w-1/2 pr-3">
+              <h3 className="text-lg text-zinc-500">First Name</h3>
               <input
                 type="text"
-                {...register("fullName", { required: "Full Name is required" })}
+                {...register("firstName", { required: "First Name is required" })}
                 className="mt-3 text-2xl font-light text-white bg-transparent border border-zinc-600 rounded-lg p-2"
               />
-              {errors.fullName && <p className="text-red-500">{errors.fullName.message}</p>}
+              {errors.firstName && <p className="text-red-500">{errors.firstName.message}</p>}
             </div>
-            <div className="flex flex-col w-full sm:w-1/2 mb-6 sm:mb-0 pl-3">
-              <h3 className="text-lg text-zinc-500">Email Address</h3>
+            <div className="flex flex-col w-full sm:w-1/2 pl-3">
+              <h3 className="text-lg text-zinc-500">Last Name</h3>
               <input
-                type="email"
-                value={mentee?.email}
-                disabled
-                className="mt-3 text-2xl font-light text-white bg-transparent border border-zinc-600 rounded-lg p-2 cursor-not-allowed"
+                type="text"
+                {...register("lastName", { required: "Last Name is required" })}
+                className="mt-3 text-2xl font-light text-white bg-transparent border border-zinc-600 rounded-lg p-2"
               />
+              {errors.lastName && <p className="text-red-500">{errors.lastName.message}</p>}
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row justify-between w-full">
-            <div className="flex flex-col w-full sm:w-1/2 mb-6 sm:mb-0 pr-3">
-              <h3 className="text-lg text-zinc-500">Phone No</h3>
-              <input
-                type="tel"
-                {...register("phone", {
-                  required: "Mobile number is required",
-                  validate: validateMobileNumber
-                })}
-                className="mt-2 text-2xl font-light text-white bg-transparent border border-zinc-600 rounded-lg p-2"
-              />
-              {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}
-            </div>
-            <div className="flex flex-col w-full sm:w-1/2 mb-6 sm:mb-0 pl-3">
-              <h3 className="text-lg text-zinc-500">Education</h3>
+          <div className="flex flex-col sm:flex-row justify-between w-full mb-6">
+            <div className="flex flex-col w-full sm:w-1/2 pr-3">
+              <h3 className="text-lg text-zinc-500">Job Title</h3>
               <input
                 type="text"
-                {...register("education", { required: "Education is required" })}
+                {...register("jobTitle", { required: "Job Title is required" })}
                 className="mt-3 text-2xl font-light text-white bg-transparent border border-zinc-600 rounded-lg p-2"
               />
-              {errors.education && <p className="text-red-500">{errors.education.message}</p>}
+              {errors.jobTitle && <p className="text-red-500">{errors.jobTitle.message}</p>}
             </div>
+            <div className="flex flex-col w-full sm:w-1/2 pl-3">
+              <h3 className="text-lg text-zinc-500">Company</h3>
+              <input
+                type="text"
+                {...register("company", { required: "Company is required" })}
+                className="mt-3 text-2xl font-light text-white bg-transparent border border-zinc-600 rounded-lg p-2"
+              />
+              {errors.company && <p className="text-red-500">{errors.company.message}</p>}
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row justify-between w-full mb-6">
+            <div className="flex flex-col w-full sm:w-1/2 pr-3">
+              <h3 className="text-lg text-zinc-500">Location</h3>
+              <input
+                type="text"
+                {...register("location", { required: "Location is required" })}
+                className="mt-3 text-2xl font-light text-white bg-transparent border border-zinc-600 rounded-lg p-2"
+              />
+              {errors.location && <p className="text-red-500">{errors.location.message}</p>}
+            </div>
+            <div className="flex flex-col w-full sm:w-1/2 pl-3">
+              <h3 className="text-lg text-zinc-500">LinkedIn URL</h3>
+              <input
+                type="url"
+                {...register("linkedInUrl", { required: "LinkedIn URL is required" })}
+                className="mt-3 text-2xl font-light text-white bg-transparent border border-zinc-600 rounded-lg p-2"
+              />
+              {errors.linkedInUrl && <p className="text-red-500">{errors.linkedInUrl.message}</p>}
+            </div>
+          </div>
+          <div className="flex flex-col w-full mb-6">
+            <h3 className="text-lg text-zinc-500">Personal Website</h3>
+            <input
+              type="url"
+              {...register("personalWebsiteUrl")}
+              className="mt-3 text-2xl font-light text-white bg-transparent border border-zinc-600 rounded-lg p-2"
+            />
           </div>
           <div className="flex flex-col w-full mb-6">
             <h3 className="text-lg text-zinc-500">Bio</h3>
             <textarea
               {...register("bio", { required: "Bio is required" })}
-              className="mt-4 text-2xl font-light leading-7 text-white bg-transparent border border-zinc-600 rounded-lg p-2"
-              rows={4}
+              className="mt-3 text-xl font-light text-white bg-transparent border border-zinc-600 rounded-lg p-2 h-32 resize-none"
             />
             {errors.bio && <p className="text-red-500">{errors.bio.message}</p>}
           </div>
-          <div className="flex self-end">
-            <button type="submit" className='bg-blue text-white p-2 w-24 rounded-md'>
-              Save
-            </button>
-          </div>
+          <button type="submit" className="bg-blue text-white py-3 px-5 rounded-lg mt-6 self-end">
+            Save Changes
+          </button>
         </form>
       </div>
     </section>

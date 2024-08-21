@@ -65,8 +65,8 @@ const ProfileContent: React.FC = () => {
             </button>
           </div>
         </nav>
-        <div className="flex flex-col mr-3 w-[78%] max-md:ml-0 max-md:w-full">
-          <Outlet/>
+        <div className="flex flex-col mr-3 w-[78%] max-md:ml-0 max-md:w-full overflow-y-auto h-full">
+          <Outlet />
         </div>
       </div>
     </main>

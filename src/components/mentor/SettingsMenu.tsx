@@ -3,7 +3,8 @@ import { NavLink } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../api/mentee';
-import { menteeLogin, menteeLogout } from '../../store/slices/menteeAuthSlice';
+import { mentorLogin, mentorLogout } from '../../store/slices/mentorAuthSlice';
+
 
 interface MenuItem {
   icon: string;
@@ -25,8 +26,8 @@ const SettingsMenu: React.FC = () => {
   const handleLogout = async () => {
     const response = await logout();
     console.log(response, 'logout response');
-    dispatch(menteeLogin(null));
-    dispatch(menteeLogout());
+    dispatch(mentorLogin(null));
+    dispatch(mentorLogout());
     navigate('/')
   };
 

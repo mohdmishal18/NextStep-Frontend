@@ -15,7 +15,7 @@ import ProfilePage from '../pages/mentee/ProfilePagee';
 const MenteeRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<ProtectLogin><Layout /></ProtectLogin>}>
+      <Route path="/" element={<ProtectLogin><Layout/></ProtectLogin>}>
         <Route index element={<DashboardPage />} />
         <Route path='myfeed' element={<MyFeedPage/>}/>
         <Route path="account" element={<ProfileContent/>}>

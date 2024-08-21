@@ -23,6 +23,17 @@ export const menteeSignup = async (menteeData: signUpData) => {
   }
 };
 
+// Google Register
+export const googleAuthRegister = async (name: string, email: string, image: string)=>{
+  try {
+    return await API.post(menteeRoutes.googleRegister, { name, email, image });
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+}
+
 // Sign in
 export const signIn = async (email: string, password: string) => {
   try {

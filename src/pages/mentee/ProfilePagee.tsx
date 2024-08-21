@@ -1,6 +1,6 @@
 //components
-import ProfileHeader from "../../components/mentor/ProfileHeader"
-import PersonalInfo from "../../components/mentor/PersonalInfo"
+import ProfileHeader from "../../components/mentee/ProfileHeader"
+import PersonalInfo from "../../components/mentee/PersonalInfo"
 
 const ProfilePage = () => {
   return (

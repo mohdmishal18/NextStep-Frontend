@@ -10,13 +10,16 @@ const adminRoutes = {
     listSkill: '/admin/list-skill',
 
     //mentee
-    getMentees: '/admin/get-mentees',
-    blockMenetee: '/admin/block-mentee',
+    getMentees: '/admin/all-mentees',
+    blockMentee: '/admin/block-mentee',
 
     //mentor
     getMentor: '/admin/get-mentors',
     blockMentor: '/admin/block-mentor',
-    getApplications: '/admin/all-applications'
+    getApplications: '/admin/all-applications',
+    approve: '/admin/approve-mentor',
+    reject: '/admin/reject-mentor',
+    getApproved: '/admin/approved-mentors'
 
 }
 

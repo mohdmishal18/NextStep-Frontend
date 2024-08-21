@@ -62,15 +62,22 @@ const SkillManagement: React.FC = () => {
       try {
         if (!currentSkill?._id) {
           const res = await addSkill(currentSkill.name);
+          console.log(res.data);
+          
           if (res.status) {
             toast.success("Skill added successfully");
           }
         } else {
           // Update existing skill
           const res = await editSkill(currentSkill._id, currentSkill.name);
+
+          console.log(res)
           console.log("edited name", currentSkill.name)
           
-          if(res.status)toast.success("Skill updated successfully");
+          if(res.data.status && res.data.editedSkill)toast.success("Skill updated successfully");
+          else {
+            toast.error("duplicate skill")
+          }
         }
         fetchSkills(); // Refresh the skill list after add/edit
       } catch (err) {

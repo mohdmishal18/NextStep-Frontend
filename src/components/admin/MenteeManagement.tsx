@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { MentorData } from "../../Types/mentorTypes";
-import { approveMentor, rejectMentor } from "../../api/admin";
-import { getAllApplication } from "../../api/admin";
-import { blockMentor } from "../../api/admin";
+import { MenteeProfile } from "../../Types/menteeTypes";
+import { blockMentee } from "../../api/admin";
+import { getAllMentees } from "../../api/admin";
 import {
   Button,
   IconButton,
@@ -20,48 +19,37 @@ import {
 } from "@mui/material";
 import { Visibility } from "@mui/icons-material";
 
-const MentorApplications: React.FC = () => {
-  const [mentors, setMentors] = useState<MentorData[]>([]);
-  const [currentMentor, setCurrentMentor] = useState<MentorData | null>(null);
+const MenteeManagement: React.FC = () => {
+  const [mentees, setMentees] = useState<MenteeProfile[]>([]);
+  const [currentMentee, setCurrentMentee] = useState<MenteeProfile | null>(
+    null
+  );
   const [openModal, setOpenModal] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    fetchApplications();
+    fetchMentees();
   }, []);
 
-  const fetchApplications = async () => {
+  const fetchMentees = async () => {
     try {
-      const response = await getAllApplication();
-      setMentors(response.data.mentors);
-      console.log(response.data.mentors);
+      const response = await getAllMentees();
+      setMentees(response.data.mentees);
+      console.log(response.data.mentees);
     } catch (err) {
-      console.error("Error fetching mentors:", err);
+      console.error("Error fetching mentees:", err);
     }
   };
 
-  const handleApprove = async (id: string , status: string) => {
-    try {
-      const response = await approveMentor(id, status)
-      
-      console.log(response.data);
-      fetchApplications();
-      handleCloseModal()
-      
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const handleOpenModal = (mentor: MentorData) => {
-    setCurrentMentor(mentor);
+  const handleOpenModal = (mentee: MenteeProfile) => {
+    setCurrentMentee(mentee);
     setOpenModal(true);
   };
 
   const handleCloseModal = () => {
     setOpenModal(false);
-    setCurrentMentor(null);
+    setCurrentMentee(null);
   };
 
   const handleChangePage = (
@@ -78,10 +66,19 @@ const MentorApplications: React.FC = () => {
     setPage(0);
   };
 
+  const handleBlockUnblock = async (mentee: MenteeProfile) => {
+    // Implement block/unblock logic here
+    const updatedMentees = mentees.map((m) =>
+      m._id === mentee._id ? { ...m, isBlocked: !m.isBlocked } : m
+    );
+    setMentees(updatedMentees);
+    handleCloseModal();
+  };
+
   return (
     <div className="flex flex-col p-8 bg-zinc-900 rounded-[60px] mt-8">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-white text-3xl">Mentor Applications</h2>
+        <h2 className="text-white text-3xl">Mentee Management</h2>
       </div>
 
       <TableContainer component={Paper}>
@@ -92,56 +89,59 @@ const MentorApplications: React.FC = () => {
               <TableCell align="center">Profile Picture</TableCell>
               <TableCell align="center">Name</TableCell>
               <TableCell align="center">Email</TableCell>
-              <TableCell align="center">Location</TableCell>
-              <TableCell align="center">Status</TableCell>
+              <TableCell align="center">Is Verified</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody className="bg-secondary">
-            {mentors.length > 0 ? (
-              mentors
+            {mentees.length > 0 ? (
+              mentees
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((mentor, index) => (
-                  <TableRow key={mentor._id}>
+                .map((mentee, index) => (
+                  <TableRow key={mentee._id}>
                     <TableCell style={{ color: "#ffffff" }}>
                       {page * rowsPerPage + index + 1}
                     </TableCell>
                     <TableCell align="center">
                       <Avatar
-                        alt={mentor.firstName}
-                        src={mentor.profilePicture}
+                        alt={mentee.name}
+                        src={mentee.profilePicture}
                       />
                     </TableCell>
                     <TableCell align="center" style={{ color: "#ffffff" }}>
-                      {mentor.firstName} {mentor.lastName}
+                      {mentee.name}
                     </TableCell>
                     <TableCell align="center" style={{ color: "#ffffff" }}>
-                      {mentor.email}
+                      {mentee.email}
                     </TableCell>
                     <TableCell align="center" style={{ color: "#ffffff" }}>
-                      {mentor.location}
-                    </TableCell>
-                    <TableCell align="center" style={{ color: "#ffffff" }}>
-                      {mentor.status}
+                      {mentee.otpVerified ? "Yes" : "No"}
                     </TableCell>
                     <TableCell align="right">
                       <IconButton
                         color="inherit"
-                        onClick={() => handleOpenModal(mentor)}
+                        onClick={() => handleOpenModal(mentee)}
                       >
                         <Visibility style={{ color: "#6b7280" }} />
                       </IconButton>
+                      <Button
+                        variant="contained"
+                        color={mentee.isBlocked ? "error" : "success"}
+                        onClick={() => handleBlockUnblock(mentee)}
+                      >
+                        {mentee.isBlocked ? "Unblock" : "Block"}
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={6}
                   align="center"
                   style={{ color: "#ffffff" }}
                 >
-                  No mentor applications available.
+                  No mentees available.
                 </TableCell>
               </TableRow>
             )}
@@ -151,7 +151,7 @@ const MentorApplications: React.FC = () => {
           className="bg-neutral-600"
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={mentors.length}
+          count={mentees.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -174,43 +174,27 @@ const MentorApplications: React.FC = () => {
             borderRadius: 2,
           }}
         >
-          <h2>Mentor Details</h2>
-          {currentMentor && (
+          <h2>Mentee Details</h2>
+          {currentMentee && (
             <>
               <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-4">
                   <Avatar
-                    alt={currentMentor.firstName}
-                    src={currentMentor.profilePicture}
+                    alt={currentMentee.name}
+                    src={currentMentee.profilePicture}
                     sx={{ width: 80, height: 80 }}
                   />
                   <div>
-                    <h3>
-                      {currentMentor.firstName} {currentMentor.lastName}
-                    </h3>
-                    <p>{currentMentor.jobTitle} at {currentMentor.company}</p>
+                    <h3>{currentMentee.name}</h3>
+                    <p>{currentMentee.education}</p>
                   </div>
                 </div>
                 <div>
-                  <p><strong>Email:</strong> {currentMentor.email}</p>
-                  <p><strong>Location:</strong> {currentMentor.location}</p>
-                  <p><strong>Skills:</strong> {currentMentor.skills.map(skill => skill.name).join(', ')}</p>
-                  <p><strong>Bio:</strong> {currentMentor.bio}</p>
-                  <p><strong>LinkedIn:</strong> <a href={currentMentor.linkedInUrl} target="_blank" rel="noopener noreferrer">{currentMentor.linkedInUrl}</a></p>
-                  {currentMentor.personalWebsiteUrl && (
-                    <p><strong>Website:</strong> <a href={currentMentor.personalWebsiteUrl} target="_blank" rel="noopener noreferrer">{currentMentor.personalWebsiteUrl}</a></p>
-                  )}
-                  <p><strong>Why Become a Mentor:</strong> {currentMentor.whyBecomeMentor}</p>
-                  <p><strong>Greatest Achievement:</strong> {currentMentor.greatestAchievement}</p>
-                  <p><strong>Status:</strong> {currentMentor.status}</p>
-                </div>
-                <div className="flex justify-end gap-4 mt-4">
-                  <Button variant="contained" color="success" onClick={() => handleApprove(currentMentor._id, "approved")}>
-                    Approve
-                  </Button>
-                  {/* <Button variant="contained" color="error">
-                    Reject
-                  </Button> */}
+                  <p><strong>Email:</strong> {currentMentee.email}</p>
+                  <p><strong>Phone:</strong> {currentMentee.phone}</p>
+                  <p><strong>Bio:</strong> {currentMentee.bio}</p>
+                  <p><strong>Is Verified:</strong> {currentMentee.otpVerified ? "Yes" : "No"}</p>
+                  <p><strong>Status:</strong> {currentMentee.isBlocked ? "Blocked" : "Active"}</p>
                 </div>
               </div>
             </>
@@ -221,4 +205,4 @@ const MentorApplications: React.FC = () => {
   );
 };
 
-export default MentorApplications;
+export default MenteeManagement;
