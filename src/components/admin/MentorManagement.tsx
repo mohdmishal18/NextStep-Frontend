@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MentorData } from "../../Types/mentorTypes";
-import { getApprovedMentors } from "../../api/admin";
+import { blockMentor, getApprovedMentors } from "../../api/admin";
 import {
   Button,
   IconButton,
@@ -63,20 +63,26 @@ const MentorManagement: React.FC = () => {
     setPage(0);
   };
 
-//   const handleBlockUnblock = async (mentor: MentorData) => {
-//     try {
-//       if (mentor.isBlocked) {
-//         await unblockMentor(mentor._id);
-//         console.log(`Unblocked mentor: ${mentor.firstName}`);
-//       } else {
-//         await blockMentor(mentor._id);
-//         console.log(`Blocked mentor: ${mentor.firstName}`);
-//       }
-//       fetchApprovedMentors();
-//     } catch (err) {
-//       console.error("Error blocking/unblocking mentor:", err);
-//     }
-//   };
+  const handleBlockUnblock = async (mentor: MentorData) => {
+    try {
+      // Call the API to block/unblock the mentee
+      const response = await blockMentor(mentor._id, !mentor.isBlocked);
+      console.log(response, "block");
+      
+      if (response.status === 200) {
+        // If the API call is successful, update the mentees state
+        // const updatedMentees = mentees.map((m) =>
+        //   m._id === mentee._id ? { ...m, isBlocked: !m.isBlocked } : m
+        // );
+        fetchApprovedMentors()
+        handleCloseModal();
+      } else {
+        console.error("Failed to update mentee status:", response.data.message);
+      }
+    } catch (err) {
+      console.error("Error blocking/unblocking mentee:", err);
+    }
+  };
 
   return (
     <div className="flex flex-col p-8 bg-zinc-900 rounded-[60px] mt-8">
@@ -130,7 +136,7 @@ const MentorManagement: React.FC = () => {
                       <Button
                         variant="contained"
                         color={mentor.isBlocked ? "success" : "error"}
-                        // onClick={() => handleBlockUnblock(mentor)}
+                        onClick={() => handleBlockUnblock(mentor)}
                         className="ml-2"
                       >
                         {mentor.isBlocked ? "Unblock" : "Block"}

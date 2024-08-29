@@ -1,7 +1,8 @@
+import MyFeed from "../../components/mentee/MyFeed/MyFeed"
 
 const MyFeedPage = () => {
   return (
-    <div>MyFeedPage</div>
+    <MyFeed/>
   )
 }
 

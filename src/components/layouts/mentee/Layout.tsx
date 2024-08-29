@@ -1,4 +1,4 @@
-// Layout.js
+// Layout.ts
 
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from '../../mentee/SideBar';
@@ -29,3 +29,4 @@ const Layout = () => {
 };
 
 export default Layout;
+

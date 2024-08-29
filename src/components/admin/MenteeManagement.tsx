@@ -67,12 +67,24 @@ const MenteeManagement: React.FC = () => {
   };
 
   const handleBlockUnblock = async (mentee: MenteeProfile) => {
-    // Implement block/unblock logic here
-    const updatedMentees = mentees.map((m) =>
-      m._id === mentee._id ? { ...m, isBlocked: !m.isBlocked } : m
-    );
-    setMentees(updatedMentees);
-    handleCloseModal();
+    try {
+      // Call the API to block/unblock the mentee
+      const response = await blockMentee(mentee._id, !mentee.isBlocked);
+      console.log(response, "block");
+      
+      if (response.status === 200) {
+        // If the API call is successful, update the mentees state
+        // const updatedMentees = mentees.map((m) =>
+        //   m._id === mentee._id ? { ...m, isBlocked: !m.isBlocked } : m
+        // );
+        fetchMentees()
+        handleCloseModal();
+      } else {
+        console.error("Failed to update mentee status:", response.data.message);
+      }
+    } catch (err) {
+      console.error("Error blocking/unblocking mentee:", err);
+    }
   };
 
   return (
