@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 // import Interests from "./Interests";
 const ProfileContent: React.FC = () => {
@@ -20,7 +21,7 @@ const ProfileContent: React.FC = () => {
                   My Profile
                 </span>
               </button>
-              {/* <div className="flex flex-col px-7 mt-3.5 max-md:px-5">
+              <div className="flex flex-col px-7 mt-3.5 max-md:px-5">
                 <button className="flex gap-2.5 text-xl text-white">
                   <img
                     loading="lazy"
@@ -28,41 +29,13 @@ const ProfileContent: React.FC = () => {
                     alt=""
                     className="shrink-0 aspect-square w-[30px]"
                   />
-                  <span className="flex-auto">My Posts</span>
+                  {/* <span className="flex-auto">My Posts</span> */}
+                  <Link to="/mentee/account/myposts" className="flex-auto text-white">
+                    My Posts
+                  </Link>
                 </button>
-                <button className="flex gap-3.5 self-start mt-7 ml-3.5 max-md:ml-2.5">
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/dafe8f53e6b139e71a055b0f763327ab5f0859266295636abe1a742321d155dd?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be"
-                    alt=""
-                    className="w-[27px] aspect-[0.93]"
-                  />
-                  <span className="flex-auto self-start text-xl text-white">
-                    Notifications
-                  </span>
-                </button>
-                <button className="flex gap-3 mt-6 text-xl text-white whitespace-nowrap">
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/ec2fb9aafeceddb31e755fca508551d32fc76447dec7655fe3e125a0c2e78a39?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be"
-                    alt=""
-                    className="shrink-0 aspect-square w-[30px]"
-                  />
-                  <span className="flex-auto my-auto">Billing</span>
-                </button>
-              </div> */}
+              </div>
             </div>
-            <button className="flex gap-3.5 mx-5 mt-4 max-md:mx-2.5">
-              <img
-                loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/47fb58eff1844c667e917434fcbeef6de1f3e3a17dfc7265b162f8201c89fd4d?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be"
-                alt=""
-                className="w-[27px] aspect-square"
-              />
-              <span className="flex-auto my-auto text-xl text-white">
-                Delete Account
-              </span>
-            </button>
           </div>
         </nav>
         <div className="flex flex-col mr-3 w-[78%] max-md:ml-0 max-md:w-full overflow-y-auto h-full">

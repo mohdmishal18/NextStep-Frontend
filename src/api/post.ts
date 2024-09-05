@@ -28,3 +28,26 @@ export const getAllPosts = async () => {
         throw err;
     }
 }
+
+export const GetUserPosts = async (userid : string) => {
+    try {
+        const res = await API.post(postRoutes.getUserPosts, {userid})
+        return res
+    } catch (error) {
+        const err: Error = error as Error;
+        errorHandle(err);
+        throw err;
+    }
+}
+
+export const DeletePost = async (id : string) => {
+    try {
+        const res = await API.post(postRoutes.deletePost, {id})
+        return res
+    } catch (error) {
+        const err: Error = error as Error;
+        errorHandle(err);
+        throw err;
+    }
+}
+

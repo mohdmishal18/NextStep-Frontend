@@ -12,6 +12,12 @@ interface EditPicturesResponse {
   user: MenteeProfile;
 }
 
+// Define the interface for search results if needed
+interface SearchResult {
+  users: MenteeProfile[];
+  posts: any[]; // Replace `any` with the actual type for posts
+}
+
 export const menteeSignup = async (menteeData: signUpData) => {
   try {
     const res = await API.post(menteeRoutes.Signup, menteeData);
@@ -122,5 +128,18 @@ export const googleAuthLogin = async (name: string, email: string, image: string
     const err: Error = error as Error;
     errorHandle(err);
     throw err; // Re-throw the error after handling it
+  }
+};
+
+//search 
+export const search = async (query: string): Promise<SearchResult | undefined> => {
+  try {
+    // Perform the search request with the query
+    const response = await API.post<SearchResult>(menteeRoutes.Search, { query });
+    return response.data;
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    return undefined; // Ensure the function returns undefined in case of an error
   }
 };
