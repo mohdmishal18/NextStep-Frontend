@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
+import { createComment, getComment } from '../../../api/comment';
+import { useSelector } from 'react-redux';
+import { rootState } from '../../../store/store';
+import { MenteeProfile } from '../../../Types/menteeTypes';
 
 interface Comment {
-  id: number;
-  user: string;
-  profilePicture: string;
+  _id: string; // Changed to _id to match API response
+  user: {
+    _id: string;
+    name: string;
+    profilePicture: string;
+  };
   content: string;
-  createdAt: Date;
+  createdAt: string; // Changed to string to match API response format
 }
 
 interface ModalProps {
@@ -32,8 +39,25 @@ interface ModalProps {
 const PostModal: React.FC<ModalProps> = ({ post, closeModal }) => {
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState<Comment[]>(post.comments || []);
+  
+  const mentee: MenteeProfile | null = useSelector(
+    (state: rootState) => state.mentee.menteeData
+  );
 
   useEffect(() => {
+    // Fetch comments when the modal opens
+    const fetchComments = async () => {
+      try {
+        const res = await getComment(post._id);
+        console.log(res, 'res for get comment');
+        setComments(res?.data.comments || []); // Fixed key to `comments`
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+      }
+    };
+
+    fetchComments();
+
     // Prevent background scrolling when modal is open
     document.body.style.overflow = 'hidden';
 
@@ -41,23 +65,33 @@ const PostModal: React.FC<ModalProps> = ({ post, closeModal }) => {
       // Restore background scrolling when modal is closed
       document.body.style.overflow = 'auto';
     };
-  }, []);
+  }, [post._id]);
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
   };
 
-  const handleCommentSubmit = () => {
+  const handleCommentSubmit = async () => {
     if (comment.trim()) {
-      const newComment: Comment = {
-        id: comments.length + 1,
-        user: 'You', // Replace with the current user if needed
-        profilePicture: 'https://via.placeholder.com/50', // Replace with the current user's profile picture
-        content: comment,
-        createdAt: new Date(),
-      };
-      setComments([...comments, newComment]);
-      setComment('');
+      try {
+        const userId = mentee?._id; // Replace with actual user ID
+        const res = await createComment(post._id, comment, userId!);
+        console.log(res, 'res for create comment');
+        const newComment: Comment = {
+          _id: res.data.comment._id, // Ensure to match the API response structure
+          user: {
+            _id: userId!,
+            name: 'You', // Replace with the current user if needed
+            profilePicture: 'https://via.placeholder.com/50', // Replace with the current user's profile picture
+          },
+          content: comment,
+          createdAt: new Date().toISOString(), // Ensure date format is consistent
+        };
+        setComments([...comments, newComment]);
+        setComment('');
+      } catch (error) {
+        console.error('Error posting comment:', error);
+      }
     }
   };
 
@@ -122,16 +156,16 @@ const PostModal: React.FC<ModalProps> = ({ post, closeModal }) => {
           <h3 className="text-lg text-white font-bold mb-2">Comments</h3>
           {comments.length > 0 ? (
             comments.map(comment => (
-              <div key={comment.id} className="border rounded-lg p-4 mb-4 bg-gray-100">
+              <div key={comment._id} className="border rounded-lg p-4 mb-4 bg-gray-100">
                 <div className="flex items-start mb-2">
-                  <img src={comment.profilePicture} alt={comment.user} className="w-10 h-10 rounded-full mr-4" />
+                  {/* <img src={comment.user.profilePicture} alt={comment.user.name} className="w-10 h-10 rounded-full mr-4" /> */}
                   <div>
-                    <div className="font-bold">{comment.user}</div>
+                    <div className="font-bold">{comment.user.name}</div>
                     <div className="text-gray-500 text-xs mb-2">{moment(comment.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</div>
                     <p className="text-gray-700">{comment.content}</p>
                   </div>
                 </div>
-                <button className="text-blue-500 hover:underline">Reply</button>
+                {/* <button className="text-blue-500 hover:underline">Reply</button> */}
               </div>
             ))
           ) : (

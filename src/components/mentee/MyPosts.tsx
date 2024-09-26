@@ -4,12 +4,13 @@ import { useSelector } from 'react-redux';
 import { rootState } from '../../store/store';
 import { MenteeProfile } from '../../Types/menteeTypes';
 import moment from 'moment';
-import { toast } from 'react-toastify';  // Import react-toastify
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
+import EditPostModal from './MyFeed/EditPostModal';
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
 // Define the type for a post
 interface Post {
-  id: string;
+  _id: string;  // Change id to _id
   userid: {
     _id: string;
     name: string;
@@ -21,21 +22,18 @@ interface Post {
   image: string;
   content: string;
 }
-
 const MyPosts: React.FC = () => {
   const mentee: MenteeProfile | null = useSelector(
     (state: rootState) => state.mentee.menteeData
   );
 
   const [posts, setPosts] = useState<Post[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null); // Track selected post
 
   const getPosts = async () => {
     try {
-      // Fetch posts from the API
       const res = await GetUserPosts(mentee?._id!);
-      console.log(res, 'res from back');
-
-      // Assuming res.data.posts is an array of posts
       setPosts(res.data.posts);
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -44,37 +42,58 @@ const MyPosts: React.FC = () => {
 
   useEffect(() => {
     getPosts();
-  }, [mentee?._id]);
+  }, [mentee?._id,isModalOpen]);
 
-  const handleEdit = (postId: string) => {
-    window.location.href = `/edit-post/${postId}`; // Navigate to the edit page
+  const handleEdit = (post: Post) => {
+    setSelectedPost(post); // Set the selected post
+    setIsModalOpen(true);  // Open the modal
   };
 
   const handleDelete = async (postId: string) => {
-    try {
-      // Call the DeletePost API to delete the post from the server
-      const res = await DeletePost(postId);
-      console.log(res)
-      // Remove the deleted post from the state
-    //   setPosts(posts.filter(post => post.id !== postId));
-    if(res.status == 201) {
-        getPosts()
-        toast.success('Post deleted successfully!');
-    }
+    // Show SweetAlert confirmation dialog
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ok',
+    });
 
-      // Show a success toast
-    } catch (error) {
-      console.error("Error deleting post:", error);
-      toast.error('Failed to delete the post.');
+    if (result.isConfirmed) {
+      try {
+        const res = await DeletePost(postId);
+        if (res.status === 201) {
+          getPosts();
+          toast.success('Post deleted successfully!');
+        }
+      } catch (error) {
+        console.error("Error deleting post:", error);
+        toast.error('Failed to delete the post.');
+      }
     }
   };
 
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedPost(null); // Reset the selected post
+  };
+
+  const handlePostUpdate = (updatedPost: Post) => {
+    setPosts(posts.map(post => post._id === updatedPost._id ? updatedPost : post));  // Update post by _id
+  };
+
   return (
-    <div className="p-6 bg-zinc-800 rounded-[40px] w-11/12 ml-10 overflow-y-auto max-h-[139vh]">
+    <div className="p-6 bg-zinc-800 rounded-[40px] w-11/12 ml-10 overflow-y-auto max-h-[139vh]"  style={{ 
+      scrollbarWidth: 'none',  /* Firefox */
+      msOverflowStyle: 'none'  /* Internet Explorer/Edge */
+    }}>
+      
       <h2 className="text-white text-2xl mb-6">My Posts</h2>
       {posts.length > 0 ? (
         posts.map((post) => (
-          <div key={post.id} className="p-4 bg-zinc-700 mb-4 rounded-lg overflow-hidden">
+          <div key={post._id} className="p-4 bg-zinc-700 mb-4 rounded-lg overflow-hidden">
             <div className="flex items-start border-b pb-4 mb-4">
               <img src={post.userid.profilePicture} alt={post.userid.name} className="w-12 h-12 rounded-full mr-4" />
               <div>
@@ -92,13 +111,13 @@ const MyPosts: React.FC = () => {
             <p className="text-zinc-400 break-words">{post.content}</p>
             <div className="mt-4 flex space-x-4">
               <button
-                onClick={() => handleEdit(post.id)}
-                className="bg-blue-600 text-white py-2 px-4 rounded-lg"
+                onClick={() => handleEdit(post)}
+                className="bg-blue text-white py-2 px-4 rounded-lg"
               >
                 Edit
               </button>
               <button
-                onClick={() => handleDelete(post.id)}
+                onClick={() => handleDelete(post._id)}
                 className="bg-red-600 text-white py-2 px-4 rounded-lg"
               >
                 Delete
@@ -108,6 +127,16 @@ const MyPosts: React.FC = () => {
         ))
       ) : (
         <div className="text-zinc-400">You have not posted anything yet.</div>
+      )}
+
+      {/* Render the edit modal if it's open */}
+      {isModalOpen && selectedPost && (
+        <EditPostModal
+          isOpen={isModalOpen}
+          onClose={handleModalClose}
+          post={selectedPost}
+          onSubmitSuccess={handlePostUpdate}  // Handle successful post update
+        />
       )}
     </div>
   );

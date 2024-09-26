@@ -51,3 +51,33 @@ export const DeletePost = async (id : string) => {
     }
 }
 
+
+export const editPost = async (postData: Partial<postForm>) => {
+    try {
+        const res = await API.put(postRoutes.EditPost, postData)
+        return res
+    } catch (error) {
+        const err: Error = error as Error;
+        errorHandle(err);
+        throw err;
+    }
+}
+
+
+export const likePost = async(userid: string, postid: string) => {
+    try {
+        const res = await API.post(postRoutes.LikePost, {userid, postid})
+        return res
+    } catch (error) {
+        
+    }
+}
+
+export const UnLikePost = async(userid: string, postid: string) => {
+    try {
+        const res = await API.post(postRoutes.LikePost, {userid, postid})
+        return res
+    } catch (error) {
+        
+    }
+}
