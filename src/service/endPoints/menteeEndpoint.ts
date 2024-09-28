@@ -9,7 +9,8 @@ const menteeRoutes = {
     resendOtp: '/mentee/resend-otp',
     EditPictures: '/mentee/edit-picture',
     EditDetails: '/mentee/edit-details',
-    Search: '/mentee/search'
+    Search: '/mentee/search',
+    GetMentee: '/mentee/get-mentee/'
 }
 
 

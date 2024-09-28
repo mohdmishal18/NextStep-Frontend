@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../../api/mentee';
+import { logout } from '../../api/mentor';
 import { mentorLogin, mentorLogout } from '../../store/slices/mentorAuthSlice';
 
 

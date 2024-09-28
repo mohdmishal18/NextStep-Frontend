@@ -8,11 +8,11 @@ import ProfileContent from '../components/mentee/ProfileContent';
 
 import DashboardPage from '../pages/mentee/DashboardPage';
 import MyFeedPage from '../pages/mentee/MyFeedPage';
-
 import AccountSettings from '../components/mentee/AccountSettings';
 import ProfilePage from '../pages/mentee/ProfilePagee';
 import SearchPage from '../pages/mentee/SearchPage';
 import MyPostsPage from '../pages/mentee/MyPostsPage';
+import MenteeProfilePage from '../pages/common/MenteeProfile';
 
 const MenteeRoutes = () => {
   return (
@@ -21,6 +21,7 @@ const MenteeRoutes = () => {
         <Route index element={<DashboardPage />} />
         <Route path='myfeed' element={<MyFeedPage/>}/>
         <Route path='search' element={<SearchPage/>}/>
+        <Route path='user-mentee/:id' element={<MenteeProfilePage/>}/>
         <Route path="account" element={<ProfileContent/>}>
           <Route index element={<ProfilePage/>}/>
           <Route path="settings" element={<AccountSettings />} />

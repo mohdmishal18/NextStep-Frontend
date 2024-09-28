@@ -1,5 +1,5 @@
 import React from 'react';
-import SearchBar from './SearchBar';
+// import SearchBar from './SearchBar';
 import MainMenu from './MainMenu';
 import SettingsMenu from './SettingsMenu';
 
@@ -11,7 +11,7 @@ const Sidebar: React.FC = () => {
           <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/c7bbd6fa596547270f0fc20956297a52d970e56766165ef558cb9fa7c285350a?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be" alt="Logo" className="shrink-0 max-w-full aspect-[1.59] w-[129px]" />
           <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/c2db6d3a7e67c26a83dddbfbd310a1f31f980aafe7332c4cf25926fd7d5a7d4e?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be" alt="User avatar" className="shrink-0 my-auto rounded-none aspect-square w-[60px]" />
         </div>
-        <SearchBar />
+        {/* <SearchBar /> */}
         <MainMenu />
         <SettingsMenu />
       </div>

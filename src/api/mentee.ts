@@ -131,6 +131,8 @@ export const googleAuthLogin = async (name: string, email: string, image: string
   }
 };
 
+
+
 //search 
 export const search = async (query: string): Promise<SearchResult | undefined> => {
   try {
@@ -143,3 +145,13 @@ export const search = async (query: string): Promise<SearchResult | undefined> =
     return undefined; // Ensure the function returns undefined in case of an error
   }
 };
+
+export const getMenteeById = async (menteeId: string): Promise<MenteeProfile> => {
+  try {
+    return await API.get(`${menteeRoutes.GetMentee}${menteeId}`)
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+}
