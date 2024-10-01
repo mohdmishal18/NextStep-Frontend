@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { search } from '../../../api/mentee';
+// import { search } from '../../../api/mentee';
 
 interface User {
   id: string;

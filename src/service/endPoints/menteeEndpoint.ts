@@ -10,7 +10,8 @@ const menteeRoutes = {
     EditPictures: '/mentee/edit-picture',
     EditDetails: '/mentee/edit-details',
     Search: '/mentee/search',
-    GetMentee: '/mentee/get-mentee/'
+    GetMentee: '/mentee/get-mentee/',
+    SearchMentee: '/mentee/search-mentees/',
 }
 
 
