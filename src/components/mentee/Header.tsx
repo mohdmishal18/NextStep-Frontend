@@ -22,7 +22,7 @@ const Header: React.FC = () => {
   // Fetch posts and users based on the search query
   const posts = useFetchPosts(debouncedSearchQuery);
   const users = useFetchUsers(debouncedSearchQuery);
-  console.log(users, "users")
+  console.log(users, "users");
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -30,7 +30,7 @@ const Header: React.FC = () => {
     setShowDropdown(query.length > 0);
   };
 
-  // Function to clear search input
+  // Function to clear search input and hide dropdown
   const handleClearSearch = () => {
     setSearchQuery('');
     setShowDropdown(false);
@@ -86,6 +86,7 @@ const Header: React.FC = () => {
                           key={index}
                           to={`/mentee/user-mentee/${user._id}`} // Link to the mentee's profile
                           className="flex items-center p-2 hover:bg-gray-700 cursor-pointer"
+                          onClick={handleClearSearch} // Clear search on click
                         >
                           <img
                             src={user.profilePicture || '/placeeHolderProfile.jpg'} // Display user's profile picture
@@ -105,6 +106,7 @@ const Header: React.FC = () => {
                         <div
                           key={index}
                           className="p-2 hover:bg-gray-700 cursor-pointer"
+                          onClick={handleClearSearch} // Clear search on click
                         >
                           <span>{post.title}</span>
                         </div>
