@@ -16,7 +16,7 @@ const menuItems: MenuItem[] = [
   { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/55f50947baf0dff894ec0dcd4890543b1f65316e41c5a96e5182b410c55bf446?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be", label: "Manage Posts", alt: "Saved mentors icon", path: "/admin/posts" },
   // { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/b5f5b9874de3bc4aa8936d3f86527a3b220310f0574ac7d305bb3649cbd839b1?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be", label: "Payment History", alt: "Requested mentors icon", path: "/admin/payments" },
   { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/aa6e11fd17506f676133fb531cee08108dca017c97f98c2e66a21b54457eebe3?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be", label: "MentorApplications", alt: "Session history icon", path: "/admin/mentor-applications" },
-  // { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/e594c285702c4194500780d18ea5a75765ad45bcaf593acc1b0b26e39c9b5dbb?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be", label: "Reports", alt: "Search icon", path: "/admin/reports" },
+  { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/e594c285702c4194500780d18ea5a75765ad45bcaf593acc1b0b26e39c9b5dbb?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be", label: "Reports", alt: "Search icon", path: "/admin/reports" },
 ];
 
 const MainMenu: React.FC = () => {

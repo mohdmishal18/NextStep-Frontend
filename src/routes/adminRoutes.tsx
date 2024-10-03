@@ -13,6 +13,7 @@ import MentorManagementPage from '../pages/admin/MentorManagementPage';
 import MenteeManagementPage from '../pages/admin/MenteeManagementPage';
 import SettingsContent from '../components/admin/Settings/SettingsContent';
 import PostManagementPage from '../pages/admin/PostManagementPage';
+import ReportPage from '../pages/admin/ReportPage';
 
 const AdminRoutes = () => {
   return (
@@ -35,6 +36,7 @@ const AdminRoutes = () => {
         <Route path="mentor-applications" element={<MentorApplicationsPage />} />
         <Route path="settings" element={<SettingsContent />} />
         <Route path='posts' element={<PostManagementPage/>}/>
+        <Route path='reports' element={<ReportPage/>}/>
       </Route>
     </Routes>
   );

@@ -24,6 +24,7 @@ interface Post {
   content: string;
   likes: number;
   comments: Comment[];
+  hidden?: boolean; // Add this property
 }
 
 interface Comment {
@@ -44,7 +45,8 @@ const PostManagement: React.FC = () => {
     const fetchPosts = async () => {
       try {
         const response = await getAllPosts();
-        setPosts(response.data.posts); // Adjust based on the API response structure
+        const postsWithHiddenFlag = response.data.posts.map(post => ({ ...post, hidden: false })); // Initialize hidden state
+        setPosts(postsWithHiddenFlag);
       } catch (error) {
         console.error('Error fetching posts:', error);
       }
@@ -67,9 +69,18 @@ const PostManagement: React.FC = () => {
     setSelectedPost(null);
   };
 
+  const togglePostVisibility = (postId: string) => {
+    setPosts(prevPosts =>
+      prevPosts.map(post => 
+        post._id === postId ? { ...post, hidden: !post.hidden } : post
+      )
+    );
+  };
+
   const filteredPosts = posts.filter(post =>
-    post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.tags.some(tag => tag.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    !post.hidden && // Only include visible posts
+    (post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    post.tags.some(tag => tag.name.toLowerCase().includes(searchTerm.toLowerCase())))
   );
 
   return (
@@ -92,6 +103,7 @@ const PostManagement: React.FC = () => {
                 <th className="p-2 border-b border-gray-700">Title</th>
                 <th className="p-2 border-b border-gray-700">Tags</th>
                 <th className="p-2 border-b border-gray-700">Actions</th>
+                <th className="p-2 border-b border-gray-700">Visibility</th> {/* Add Visibility Column */}
               </tr>
             </thead>
             <tbody>
@@ -111,6 +123,14 @@ const PostManagement: React.FC = () => {
                       className="text-blue-400 hover:underline"
                     >
                       See More
+                    </button>
+                  </td>
+                  <td className="p-2 border-b border-gray-700">
+                    <button 
+                      onClick={() => togglePostVisibility(post._id)} 
+                      className={`text-xs ${post.hidden ? 'text-green-400' : 'text-red-400'} hover:underline`}
+                    >
+                      {post.hidden ? 'Unhide' : 'Hide'}
                     </button>
                   </td>
                 </tr>

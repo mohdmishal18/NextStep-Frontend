@@ -5,5 +5,6 @@ export const postRoutes = {
     deletePost: '/posts/delete-post',
     EditPost: 'posts/edit-post',
     LikePost: 'posts/like-post',
-    UnLikePost: 'posts/unlike-post'
+    UnLikePost: 'posts/unlike-post',
+    ReportPost:'posts/report'
 }

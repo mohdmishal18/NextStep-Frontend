@@ -81,3 +81,15 @@ export const UnLikePost = async(userid: string, postid: string) => {
         
     }
 }
+
+
+export const reportPost = async (postid: string, userid: string, reason: string) => {
+    try {
+        const res = await API.post(postRoutes.ReportPost, { postid, userid, reason });
+        return res;
+    } catch (error) {
+        const err: Error = error as Error;
+        errorHandle(err);
+        throw err;
+    }
+};

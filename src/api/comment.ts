@@ -25,3 +25,27 @@ export const getComment = async (postid: string) => {
         
     }
 }
+
+// Edit comment
+export const editComment = async (commentId: string, content: string) => {
+    try {
+        const res = await API.post(commentRoutes.EditComments, { commentId, content });
+        return res;
+    } catch (error) {
+        const err: Error = error as Error;
+        errorHandle(err);
+        throw err;
+    }
+}
+
+// Delete comment
+export const deleteComment = async (commentId: string) => {
+    try {
+        const res = await API.post(commentRoutes.DeleteComments, { commentId });
+        return res;
+    } catch (error) {
+        const err: Error = error as Error;
+        errorHandle(err);
+        throw err;
+    }
+}
