@@ -89,6 +89,11 @@ const PostManagement: React.FC = () => {
       // Refetch posts after updating
       const response = await getAllPosts();
       setPosts(response.data.posts);
+
+      // Update selectedPost state if it is currently the displayed post
+      if (selectedPost && selectedPost._id === postId) {
+        setSelectedPost(prev => prev ? { ...prev, isBlocked: !currentState } : null);
+      }
     } catch (error) {
       console.error('Error updating post visibility:', error);
     }
@@ -187,6 +192,15 @@ const PostManagement: React.FC = () => {
             </div>
             <img src={selectedPost.image} alt={selectedPost.title} className="w-full h-auto object-cover mb-4" />
             <p className="text-sm text-white mb-4">{selectedPost.content}</p>
+            {/* Add toggle visibility button inside the modal */}
+            <div className="flex justify-end">
+              <button 
+                onClick={() => togglePostVisibility(selectedPost._id, selectedPost.isBlocked)} 
+                className={`text-xs ${selectedPost.isBlocked ? 'text-green-400' : 'text-red-400'} hover:underline`}
+              >
+                {selectedPost.isBlocked ? 'Show' : 'Hide'}
+              </button>
+            </div>
           </div>
         </div>
       )}
