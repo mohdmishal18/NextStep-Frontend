@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { toast } from "react-toastify";
@@ -267,9 +267,15 @@ const SignUpForm = () => {
       </div>
       <p className="mt-5 text-sm text-blue max-md:max-w-full">
         Already have an account?{" "}
-        <a href="#" className="font-semibold text-blue-600">
+        <Link to="/login" className="font-semibold text-blue-600">
           Log in to your account.
-        </a>
+        </Link>
+      </p>
+      <p className="mt-5 text-sm text-blue max-md:max-w-full">
+        Want to be a Mentor ?{" "}
+        <Link to="/mentorApply" className="font-semibold text-blue-600">
+          SignUp as mentor
+        </Link>
       </p>
     </form>
   );

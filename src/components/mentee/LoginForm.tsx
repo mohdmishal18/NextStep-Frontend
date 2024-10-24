@@ -1,7 +1,7 @@
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { menteeLogin } from "../../store/slices/menteeAuthSlice";
 import { googleAuthLogin } from "../../api/mentee";
@@ -208,9 +208,15 @@ const LoginForm: React.FC = () => {
         </form>
         <p className="mt-6 text-sm leading-6 text-blue max-md:max-w-full">
           Don't have an account?{" "}
-          <a href="#" className="font-semibold text-blue">
+          <Link to="/signup" className="font-semibold text-blue">
             Create free account
-          </a>
+          </Link>
+        </p>
+        <p className="mt-6 text-sm leading-6 text-blue max-md:max-w-full">
+          Are you a mentor?{" "}
+          <Link to="/mentor-login" className="font-semibold text-blue">
+            Log in as mentor
+          </Link>
         </p>
       </div>
     </div>

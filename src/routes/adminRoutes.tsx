@@ -35,7 +35,7 @@ const AdminRoutes = () => {
         <Route path="skills" element={<SkillManagementPage />} />
         <Route path="mentor-applications" element={<MentorApplicationsPage />} />
         <Route path="settings" element={<SettingsContent />} />
-        <Route path='posts' element={<PostManagementPage/>}/>
+        <Route path='posts/:id?' element={<PostManagementPage/>}/>
         <Route path='reports' element={<ReportPage/>}/>
       </Route>
     </Routes>

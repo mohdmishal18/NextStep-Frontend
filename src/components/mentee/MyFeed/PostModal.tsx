@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
+import { toast } from 'react-toastify';
 import { createComment, getComment, editComment, deleteComment } from '../../../api/comment';
 import { reportPost } from '../../../api/post';
 import { useSelector } from 'react-redux';
@@ -158,9 +159,9 @@ const PostModal: React.FC<ModalProps> = ({ post, closeModal }) => {
         console.log("res for report",res);
         
         if (res.data.status === 'success') {
-          alert('Post reported successfully!');
+          toast.success('Post reported successfully!');
         } else {
-          alert('Failed to report the post. Please try again.');
+          toast.error('Failed to report the post. Please try again.');
         }
       } catch (error) {
         console.error('Error reporting post:', error);

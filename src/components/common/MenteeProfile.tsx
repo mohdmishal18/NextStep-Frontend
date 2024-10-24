@@ -38,6 +38,7 @@ const MenteeProfile: React.FC = () => {
       const response = await getMenteeById(id!);
       if (response.data.status) {
         setUser(response.data.data);
+        console.log(response.data.data, "mentee data")
       } else {
         toast.error("Failed to load user data.");
       }

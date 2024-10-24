@@ -6,5 +6,8 @@ export const postRoutes = {
     EditPost: 'posts/edit-post',
     LikePost: 'posts/like-post',
     UnLikePost: 'posts/unlike-post',
-    ReportPost:'posts/report'
+    ReportPost:'posts/report',
+    GetReports: 'posts/report',
+    HidePost: 'posts/hide-post'
+    
 }

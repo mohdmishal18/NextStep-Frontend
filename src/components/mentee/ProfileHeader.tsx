@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { rootState } from "../../store/store";
 import { MenteeProfile } from "../../Types/menteeTypes";
 import { menteeLogin } from "../../store/slices/menteeAuthSlice";
+import useFollowCount from "../../hooks/useFollowCount";
 import { editPictures } from "../../api/mentee";
 import { FaEdit } from "react-icons/fa";
 
@@ -27,6 +28,14 @@ const ProfileHeader: React.FC = () => {
   const [previewBannerImage, setPreviewBannerImage] = useState<string | null>(
     null
   );
+
+  const { 
+    followingCount, 
+    followersCount, 
+    loading: followCountLoading, 
+    error: followCountError,
+    refetch: refetchFollowCount 
+  } = useFollowCount(mentee?._id!);
 
   const dispatch = useDispatch();
 
@@ -168,17 +177,16 @@ const ProfileHeader: React.FC = () => {
                 <h2 className="ml-5 text-3xl max-md:ml-2.5">{mentee?.name}</h2>
                 <div className="flex gap-4 px-5 py-2.5 mt-3.5 whitespace-nowrap rounded-xl bg-zinc-900">
                   <div className="flex flex-col">
-                    <div className="text-xl">13</div>
+                    <div className="text-xl">0</div>
                     <div className="mt-2.5 text-base">posts</div>
                   </div>
-                  <
-                    div className="flex flex-col self-start">
-                    <div className="text-xl">302</div>
+                  <div className="flex flex-col">
+                    <div className="text-xl">{followersCount ?? 0}</div>
                     <div className="mt-2.5 text-base">followers</div>
                   </div>
                   <div className="flex flex-col">
-                    <div className="self-center text-xl">35</div>
-                    <div className="mt-2 text-base">following</div>
+                    <div className="text-xl">{followingCount ?? 0}</div>
+                    <div className="mt-2.5 text-base">following</div>
                   </div>
                 </div>
                 <p className="self-stretch mt-5 text-sm leading-3 text-white max-md:max-w-full">

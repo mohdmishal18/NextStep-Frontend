@@ -93,3 +93,25 @@ export const reportPost = async (postid: string, userid: string, reason: string)
         throw err;
     }
 };
+
+export const getReports = async () => {
+    try {
+        const res = await API.get(postRoutes.ReportPost);
+        return res;
+    } catch (error) {
+        const err: Error = error as Error;
+        errorHandle(err);
+        throw err;
+    }
+};
+
+export const hidePost = async (postid: string, status: boolean) => {
+    try {
+        const res = await API.post(postRoutes.HidePost, {postid, status});
+        return res;
+    } catch (error) {
+        const err: Error = error as Error;
+        errorHandle(err);
+        throw err;
+    }
+};
