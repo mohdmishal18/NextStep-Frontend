@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom"; // Import useParams to get URL parameters
 import Post from "./PostCard";
 import PostModal from "./PostModal";
 import NewPostModal from "./NewPostModal";
-import { getAllPosts } from "../../../api/post";
+import { getAllPosts } from "../../../api/post"; // Import blockPost from API
 
 const MyFeed: React.FC = () => {
+  const { postId } = useParams<{ postId?: string }>(); // Get postId from URL
   const [selectedPost, setSelectedPost] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [posts, setPosts] = useState<any[]>([]); // Initialize with empty array
@@ -14,7 +16,17 @@ const MyFeed: React.FC = () => {
     try {
       const response = await getAllPosts();
       console.log(response, "res from the backend");
-      setPosts(response.data.posts); // Ensure response structure matches
+      // Filter posts to include only those that are not blocked
+      const filteredPosts = response.data.posts.filter((post: any) => !post.isBlocked);
+      setPosts(filteredPosts); // Set only visible posts
+      
+      // If postId exists, find the post and set it as selected
+      if (postId) {
+        const postToOpen = filteredPosts.find((post) => post._id === postId);
+        if (postToOpen) {
+          openModal(postToOpen); // Open the modal with the post details
+        }
+      }
     } catch (error) {
       console.error("Failed to fetch posts:", error);
     }
@@ -22,7 +34,7 @@ const MyFeed: React.FC = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [postId]); // Add postId to the dependency array to refetch when it changes
 
   const openModal = (post: any) => {
     setSelectedPost(post);
@@ -33,7 +45,7 @@ const MyFeed: React.FC = () => {
   };
 
   const handleNewPostSubmitSuccess = (newPost: any) => {
-    fetchPosts()
+    fetchPosts();
   };
 
   return (
@@ -55,7 +67,9 @@ const MyFeed: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-20">
         {posts.map((post) => (
-          <Post key={post._id} post={post} openModal={() => openModal(post)} />
+          <div key={post._id} className="relative">
+            <Post post={post} openModal={() => openModal(post)} />
+          </div>
         ))}
       </div>
 

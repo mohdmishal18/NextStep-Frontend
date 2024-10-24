@@ -156,8 +156,6 @@ const PostModal: React.FC<ModalProps> = ({ post, closeModal }) => {
     if (mentee && reportReason) {
       try {
         const res = await reportPost(post._id, mentee._id, reportReason);
-        console.log("res for report",res);
-        
         if (res.data.status === 'success') {
           toast.success('Post reported successfully!');
         } else {
@@ -169,6 +167,18 @@ const PostModal: React.FC<ModalProps> = ({ post, closeModal }) => {
         setShowReportReasons(false);
         setReportReason(null); // Reset report reason
       }
+    }
+  };
+
+  // Function to copy the URL to the clipboard
+  const handleShare = async () => {
+    const url = `http://localhost:3000/mentee/myfeed/${post._id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success('Post URL copied to clipboard!');
+    } catch (error) {
+      toast.error('Failed to copy URL. Please try again.');
+      console.error('Error copying URL:', error);
     }
   };
 
@@ -208,6 +218,12 @@ const PostModal: React.FC<ModalProps> = ({ post, closeModal }) => {
             {isLiked ? 'Unlike' : 'Like'} ({likes})
           </button>
           <button
+            onClick={handleShare}
+            className="ml-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          >
+            Share
+          </button>
+          <button
             onClick={() => setShowReportReasons(true)}
             className="ml-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
           >
@@ -218,88 +234,59 @@ const PostModal: React.FC<ModalProps> = ({ post, closeModal }) => {
         {showReportReasons && (
           <div className="mt-4 bg-zinc-800 p-4 rounded">
             <p className="text-white">Select a reason to report this post:</p>
-            <ul className="mt-2 space-y-2">
-              {reportReasons.map((reason, index) => (
-                <li key={index}>
-                  <button
-                    onClick={() => {
-                      setReportReason(reason);
-                      handleReportPost(); // Report directly after selecting a reason
-                    }}
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                  >
-                    {reason}
-                  </button>
+            <ul className="mt-2">
+              {reportReasons.map((reason) => (
+                <li key={reason} className="flex items-center">
+                  <input
+                    type="radio"
+                    id={reason}
+                    name="reportReason"
+                    value={reason}
+                    onChange={(e) => setReportReason(e.target.value)}
+                    className="mr-2"
+                  />
+                  <label htmlFor={reason} className="text-white">{reason}</label>
                 </li>
               ))}
             </ul>
-            <button
-              onClick={() => setShowReportReasons(false)}
-              className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-            >
-              Cancel
+            <button onClick={handleReportPost} className="mt-4 bg-blue-600 text-white px-4 py-2 rounded">
+              Submit Report
             </button>
           </div>
         )}
 
-        <div className="border-t border-gray-700 pt-4 mt-4">
-          <h3 className="text-lg text-slate-400 font-bold mb-2">Add a Comment</h3>
-          <div className="flex space-x-2">
-            <input
-              type="text"
-              className="flex-1 bg-zinc-800 text-white border border-gray-700 rounded px-4 py-2"
-              value={comment}
-              onChange={handleCommentChange}
-              placeholder="Type your comment..."
-            />
-            <button
-              onClick={handleCommentSubmit}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              Submit
-            </button>
-          </div>
-        </div>
-
         <div className="mt-4">
-          <h3 className="text-lg text-white font-bold mb-2">Comments</h3>
+          <h3 className="text-white font-bold">Comments</h3>
+          <input
+            type="text"
+            value={comment}
+            onChange={handleCommentChange}
+            className="w-full p-2 border border-gray-300 rounded mb-2"
+            placeholder="Add a comment..."
+          />
+          <button onClick={handleCommentSubmit} className="bg-blue-600 text-white px-4 py-2 rounded">Submit</button>
+
           {comments.length > 0 ? (
-            comments.map((comment) => (
-              <div key={comment._id} className="bg-zinc-800 p-2 rounded mb-2">
-                <div className="flex items-center">
-                  <img src={comment.user[0].profilePicture} alt={comment.user[0].name} className="w-8 h-8 rounded-full mr-2" />
-                  <div className="flex-1">
-                    <span className="font-bold text-white">{comment.user[0].name}</span>
-                    <p className="text-gray-400 text-sm">{moment(comment.createdAt).fromNow()}</p>
-                    {editingCommentId === comment._id ? (
-                      <div className="mt-2 flex">
-                        <input
-                          type="text"
-                          value={editCommentContent}
-                          onChange={(e) => setEditCommentContent(e.target.value)}
-                          className="bg-zinc-700 text-white border border-gray-600 rounded px-2 py-1 flex-1"
-                        />
-                        <button onClick={handleEditCommentSubmit} className="bg-green-500 text-white px-2 ml-2 rounded">
-                          Save
-                        </button>
-                      </div>
-                    ) : (
-                      <p className="text-white mt-2">{comment.content}</p>
-                    )}
+            <ul className="mt-4">
+              {comments.map((comment) => (
+                <li key={comment._id} className="flex items-center justify-between mb-2">
+                  <div className="flex items-center">
+                    <img src={comment.user[0].profilePicture} alt={comment.user[0].name} className="w-8 h-8 rounded-full mr-2" />
+                    <div>
+                      <span className="font-bold text-white">{comment.user[0].name}</span>
+                      <p className="text-gray-300">{comment.content}</p>
+                      <span className="text-gray-500 text-xs">{moment(comment.createdAt).fromNow()}</span>
+                    </div>
                   </div>
-                  <div className="flex flex-col">
-                    <button onClick={() => handleEditComment(comment._id, comment.content)} className="text-blue-500 text-xs">
-                      Edit
-                    </button>
-                    <button onClick={() => handleDeleteComment(comment._id)} className="text-red-500 text-xs">
-                      Delete
-                    </button>
+                  <div>
+                    <button onClick={() => handleEditComment(comment._id, comment.content)} className="text-blue-500 mr-2">Edit</button>
+                    <button onClick={() => handleDeleteComment(comment._id)} className="text-red-500">Delete</button>
                   </div>
-                </div>
-              </div>
-            ))
+                </li>
+              ))}
+            </ul>
           ) : (
-            <p className="text-gray-400">No comments yet.</p>
+            <p className="text-gray-500">No comments yet.</p>
           )}
         </div>
       </div>
