@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { MentorData } from "../../Types/mentorTypes";
 import { approveMentor, rejectMentor } from "../../api/admin";
 import { getAllApplication } from "../../api/admin";
-import { blockMentor } from "../../api/admin";
 import {
   Button,
   IconButton,
@@ -41,18 +40,29 @@ const MentorApplications: React.FC = () => {
     }
   };
 
-  const handleApprove = async (id: string , status: string) => {
+  const handleApprove = async (id: string, status: string) => {
     try {
-      const response = await approveMentor(id, status)
-      
+      const response = await approveMentor(id, status);
+
       console.log(response.data);
       fetchApplications();
-      handleCloseModal()
-      
+      handleCloseModal();
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
+
+  const handleReject = async (id: string, status: string) => {
+    try {
+      const response = await rejectMentor(id, status);
+
+      console.log(response.data);
+      fetchApplications();
+      handleCloseModal();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleOpenModal = (mentor: MentorData) => {
     setCurrentMentor(mentor);
@@ -188,29 +198,84 @@ const MentorApplications: React.FC = () => {
                     <h3>
                       {currentMentor.firstName} {currentMentor.lastName}
                     </h3>
-                    <p>{currentMentor.jobTitle} at {currentMentor.company}</p>
+                    <p>
+                      {currentMentor.jobTitle} at {currentMentor.company}
+                    </p>
                   </div>
                 </div>
                 <div>
-                  <p><strong>Email:</strong> {currentMentor.email}</p>
-                  <p><strong>Location:</strong> {currentMentor.location}</p>
-                  <p><strong>Skills:</strong> {currentMentor.skills.map(skill => skill.name).join(', ')}</p>
-                  <p><strong>Bio:</strong> {currentMentor.bio}</p>
-                  <p><strong>LinkedIn:</strong> <a href={currentMentor.linkedInUrl} target="_blank" rel="noopener noreferrer">{currentMentor.linkedInUrl}</a></p>
+                  <p>
+                    <strong>Email:</strong> {currentMentor.email}
+                  </p>
+                  <p>
+                    <strong>Location:</strong> {currentMentor.location}
+                  </p>
+                  <p>
+                    <strong>Skills:</strong>{" "}
+                    {currentMentor.skills.map((skill) => skill.name).join(", ")}
+                  </p>
+                  <p>
+                    <strong>Bio:</strong> {currentMentor.bio}
+                  </p>
+                  <p>
+                    <strong>LinkedIn:</strong>{" "}
+                    <a
+                      href={currentMentor.linkedInUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {currentMentor.linkedInUrl}
+                    </a>
+                  </p>
                   {currentMentor.personalWebsiteUrl && (
-                    <p><strong>Website:</strong> <a href={currentMentor.personalWebsiteUrl} target="_blank" rel="noopener noreferrer">{currentMentor.personalWebsiteUrl}</a></p>
+                    <p>
+                      <strong>Website:</strong>{" "}
+                      <a
+                        href={currentMentor.personalWebsiteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {currentMentor.personalWebsiteUrl}
+                      </a>
+                    </p>
                   )}
-                  <p><strong>Why Become a Mentor:</strong> {currentMentor.whyBecomeMentor}</p>
-                  <p><strong>Greatest Achievement:</strong> {currentMentor.greatestAchievement}</p>
-                  <p><strong>Status:</strong> {currentMentor.status}</p>
+                  <p>
+                    <strong>Why Become a Mentor:</strong>{" "}
+                    {currentMentor.whyBecomeMentor}
+                  </p>
+                  <p>
+                    <strong>Greatest Achievement:</strong>{" "}
+                    {currentMentor.greatestAchievement}
+                  </p>
+                  <p>
+                    <strong>Status:</strong> {currentMentor.status}
+                  </p>
                 </div>
                 <div className="flex justify-end gap-4 mt-4">
-                  <Button variant="contained" color="success" onClick={() => handleApprove(currentMentor._id, "approved")}>
-                    Approve
-                  </Button>
-                  {/* <Button variant="contained" color="error">
-                    Reject
-                  </Button> */}
+                  {currentMentor.status === "rejected" ? (
+                    <p style={{ color: "red", fontWeight: "bold" }}>Rejected</p>
+                  ) : (
+                    <>
+                      <Button
+                        variant="contained"
+                        color="success"
+                        onClick={() =>
+                          handleApprove(currentMentor._id, "approved")
+                        }
+                      >
+                        Approve
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() =>
+                          handleReject(currentMentor._id, "rejected")
+                        }
+                      >
+                        Reject
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </>
