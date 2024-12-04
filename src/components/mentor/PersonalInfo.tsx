@@ -38,7 +38,7 @@ const PersonalInfo: React.FC = () => {
       setValue("location", mentor.location);
       setValue("bio", mentor.bio);
       setValue("linkedInUrl", mentor.linkedInUrl);
-      setValue("personalWebsiteUrl", mentor.personalWebsiteUrl);
+      setValue("personalWebsiteUrl", mentor.personalWebsiteUrl as string);
     }
   }, [mentor, setValue]);
 

@@ -1,5 +1,23 @@
 {
-  "files": [],
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "emitDeclarationOnly": true,
+    "composite": true,
+    "outDir": "./dist",
+    "lib": ["dom", "esnext"],
+    "jsx": "react-jsx",
+    "target": "ES6",
+    "module": "ESNext",
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
   "references": [
     {
       "path": "./tsconfig.app.json"
@@ -8,20 +26,6 @@
       "path": "./tsconfig.node.json"
     }
   ],
-  "compilerOptions": {
-    "baseUrl": "src",  // Set base URL to src directory
-    "paths": {
-      "@/*": ["*"] // Map @/ to any path inside the src directory
-    },
-    "target": "ESNext",
-    "module": "ESNext",
-    "jsx": "react",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true
-  },
-  "include": [
-    "src",
-    "@types" // Include your custom types folder here
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

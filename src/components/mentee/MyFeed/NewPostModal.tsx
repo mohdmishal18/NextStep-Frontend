@@ -8,17 +8,13 @@ import { MenteeProfile } from "../../../Types/menteeTypes";
 import { useSelector } from "react-redux";
 import { rootState } from "../../../store/store";
 import { getAllSkills } from "../../../api/admin";
+import { Skills } from "@/Types/adminTypes";
 
 type NewPostModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onSubmitSuccess: (newPost: any) => void;
 };
-
-interface Skill {
-  _id: string;
-  name: string;
-}
 
 interface SelectedTag {
   id: string;
@@ -34,10 +30,11 @@ const NewPostModal: React.FC<NewPostModalProps> = ({
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [skills, setSkills] = useState<Skill[]>([]);
+  const [skills, setSkills] = useState<Skills[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
-  const [filteredSkills, setFilteredSkills] = useState<Skill[]>([]);
+  const [filteredSkills, setFilteredSkills] = useState<Skills[]>([]);
   const [selectedTags, setSelectedTags] = useState<SelectedTag[]>([]);
+  const [imageError, setImageError] = useState<string | null>(null);
 
   const mentee: MenteeProfile | null = useSelector(
     (state: rootState) => state.mentee.menteeData
@@ -53,6 +50,7 @@ const NewPostModal: React.FC<NewPostModalProps> = ({
       setImagePreview(null);
       setLoading(false);
       setSelectedTags([]);
+      setImageError(null);
     }
 
     return () => {
@@ -85,11 +83,33 @@ const NewPostModal: React.FC<NewPostModalProps> = ({
     }
   }, [inputValue, skills, selectedTags]);
 
+  console.log("fileted skills", filteredSkills)
+
+  const validateImage = (file: File) => {
+    const validTypes = ["image/jpeg", "image/png", "image/jpg"];
+    if (!validTypes.includes(file.type)) {
+      setImageError("Only JPEG, PNG, and JPG files are allowed.");
+      return false;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setImageError("File size should not exceed 10MB.");
+      return false;
+    }
+
+    setImageError(null); // Clear any previous errors
+    return true;
+  };
+
   const submitHandler = async (data: postForm) => {
     setLoading(true);
     try {
       let imageUrl = "";
       if (imageFile) {
+        if (!validateImage(imageFile)) {
+          setLoading(false);
+          return;
+        }
         const postData = new FormData();
         postData.append("file", imageFile);
         postData.append("upload_preset", "NextStepPosts");
@@ -109,6 +129,8 @@ const NewPostModal: React.FC<NewPostModalProps> = ({
         imageUrl = response.data.secure_url;
       } else {
         toast.error("Please select an image");
+        setLoading(false);
+        return;
       }
 
       const newPost = {
@@ -123,7 +145,7 @@ const NewPostModal: React.FC<NewPostModalProps> = ({
       if (postResponse.status == 201) {
         onSubmitSuccess(postResponse.data);
         setLoading(false);
-        toast.success("success")
+        toast.success("Post created successfully!");
         onClose();
       } else {
         console.error("Failed to create new post");
@@ -139,7 +161,7 @@ const NewPostModal: React.FC<NewPostModalProps> = ({
     setInputValue(e.target.value);
   };
 
-  const handleSkillSelect = (skill: Skill) => {
+  const handleSkillSelect = (skill: Skills) => {
     setSelectedTags([...selectedTags, { id: skill._id, name: skill.name }]);
     setInputValue("");
   };
@@ -152,6 +174,9 @@ const NewPostModal: React.FC<NewPostModalProps> = ({
     const files = e.target.files;
     if (files && files.length > 0) {
       const file = files[0];
+      if (!validateImage(file)) {
+        return;
+      }
       setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -229,23 +254,25 @@ const NewPostModal: React.FC<NewPostModalProps> = ({
               onChange={handleImageChange}
               className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
             />
-            {imagePreview && <img src={imagePreview} alt="Preview" className="mt-4" />}
+            {imageError && <p className="text-red-500">{imageError}</p>}
+            {imagePreview && <img src={imagePreview} alt="Preview" className="mt-2 max-h-40" />}
           </div>
           <div className="flex justify-end">
             <button
               type="button"
               onClick={onClose}
-              disabled={loading}
-              className="bg-gray-500 text-white px-4 py-2 rounded mr-2"
+              className="mr-2 bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-2 px-4 rounded"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue text-white px-4 py-2 rounded"
+              className={`${
+                loading ? "bg-blue" : "bg-blue hover:bg-blue-600"
+              } text-white font-semibold py-2 px-4 rounded`}
             >
-              {loading ? "Submitting..." : "Submit"}
+              {loading ? "Creating..." : "Create"}
             </button>
           </div>
         </form>

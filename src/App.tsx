@@ -1,5 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { NextUIProvider } from "@nextui-org/react"
 import { ToastContainer } from 'react-toastify';
+import { Toaster } from "@/components/ui/toaster"; // Adjust the path if needed
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css'
 
@@ -20,8 +22,11 @@ const App = () => {
   ])
   return (
     <>
-    <ToastContainer />
-    <RouterProvider router={router}/>
+    <NextUIProvider>
+      <ToastContainer />
+      <Toaster />
+      <RouterProvider router={router}/>
+    </NextUIProvider>
     </>
   )
 }

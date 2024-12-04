@@ -40,9 +40,9 @@ export const GetUserPosts = async (userid : string) => {
     }
 }
 
-export const DeletePost = async (id : string) => {
+export const DeletePost = async (id : string, publicId: string) => {
     try {
-        const res = await API.post(postRoutes.deletePost, {id})
+        const res = await API.post(postRoutes.deletePost, {id, publicId})
         return res
     } catch (error) {
         const err: Error = error as Error;

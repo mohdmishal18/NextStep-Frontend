@@ -52,7 +52,7 @@ const PostManagement: React.FC = () => {
 
         // Check if an ID is present in the URL and find the corresponding post
         if (id) {
-          const foundPost = postsWithHiddenFlag.find(post => post._id === id);
+          const foundPost = postsWithHiddenFlag.find((post: Post) => post._id === id);
           if (foundPost) {
             setSelectedPost(foundPost); // Set the found post
             setShowModal(true); // Show the modal

@@ -166,7 +166,7 @@ const ProfileHeader: React.FC = () => {
             <div className="flex flex-col w-[84%] max-md:ml-0 max-md:w-full">
               <div className="mt-16 flex flex-col grow items-start font-light text-sky-50 max-md:mt-10 max-md:max-w-full">
                 <h2 className="ml-5 text-3xl max-md:ml-2.5">{`${mentor?.firstName} ${mentor?.lastName}`}</h2>
-                <div className="flex gap-4 px-5 py-2.5 mt-3.5 whitespace-nowrap rounded-xl bg-zinc-900">
+                {/* <div className="flex gap-4 px-5 py-2.5 mt-3.5 whitespace-nowrap rounded-xl bg-zinc-900">
                   <div className="flex flex-col">
                     <div className="text-xl">13</div>
                     <div className="mt-2.5 text-base">posts</div>
@@ -180,7 +180,7 @@ const ProfileHeader: React.FC = () => {
                     <div className="self-center text-xl">35</div>
                     <div className="mt-2 text-base">following</div>
                   </div>
-                </div>
+                </div> */}
                 <p className="self-stretch mt-5 text-sm leading-3 text-white max-md:max-w-full">
                   {mentor?.bio}
                 </p>

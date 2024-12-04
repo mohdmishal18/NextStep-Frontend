@@ -19,7 +19,7 @@ const MenteeRoutes = () => {
     <Routes>
       <Route path="/" element={<ProtectLogin><Layout/></ProtectLogin>}>
         <Route index element={<DashboardPage />} />
-        <Route path='myfeed' element={<MyFeedPage/>}/>
+        <Route path='myfeed/:postId?' element={<MyFeedPage/>}/>
         <Route path='search' element={<SearchPage/>}/>
         <Route path='user-mentee/:id' element={<MenteeProfilePage/>}/>
         <Route path="account" element={<ProfileContent/>}>

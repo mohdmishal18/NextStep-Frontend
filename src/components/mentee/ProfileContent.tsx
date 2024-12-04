@@ -17,9 +17,9 @@ const ProfileContent: React.FC = () => {
                   alt=""
                   className="aspect-square w-[30px]"
                 />
-                <span className="flex-auto my-auto text-xl text-white">
-                  My Profile
-                </span>
+                <Link to="/mentee/account" className="flex-auto text-white text-xl">
+                    My Profile
+                  </Link>
               </button>
               <div className="flex flex-col px-7 mt-3.5 max-md:px-5">
                 <button className="flex gap-2.5 text-xl text-white">

@@ -49,8 +49,13 @@ const MyPosts: React.FC = () => {
     setIsModalOpen(true);  // Open the modal
   };
 
-  const handleDelete = async (postId: string) => {
-    // Show SweetAlert confirmation dialog
+  const extractPublicId = (url: string) => {
+    const pattern = /\/(?:v\d+\/)?(?:[^/]+\/)*([^/]+)\.[a-z]+$/;
+    const match = pattern.exec(url);
+    return match ? match[1] : null;
+  };
+
+  const handleDelete = async (postId: string, imageUrl: string) => {
     const result = await Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -58,12 +63,19 @@ const MyPosts: React.FC = () => {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'ok',
+      confirmButtonText: 'delete',
     });
 
     if (result.isConfirmed) {
+      const publicId = extractPublicId(imageUrl);
+      console.log(publicId, "PublicId")
+      if (!publicId) {
+        toast.error('Could not extract publicId from image URL.');
+        return;
+      }
+
       try {
-        const res = await DeletePost(postId);
+        const res = await DeletePost(postId, publicId);
         if (res.status === 201) {
           getPosts();
           toast.success('Post deleted successfully!');
@@ -117,7 +129,7 @@ const MyPosts: React.FC = () => {
                 Edit
               </button>
               <button
-                onClick={() => handleDelete(post._id)}
+                onClick={() => handleDelete(post._id, post.image)}
                 className="bg-red-600 text-white py-2 px-4 rounded-lg"
               >
                 Delete
