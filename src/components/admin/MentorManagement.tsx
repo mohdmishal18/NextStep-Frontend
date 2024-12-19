@@ -102,7 +102,7 @@ const MentorManagement: React.FC = () => {
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody className="bg-secondary">
+          <TableBody className="bg-[#27272a]">
             {mentors.length > 0 ? (
               mentors
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)

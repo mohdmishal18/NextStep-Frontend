@@ -145,7 +145,7 @@ const SkillManagement: React.FC = () => {
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody className="bg-secondary">
+          <TableBody className="bg-[#27272a]">
             {skills.length > 0 ? (
               skills
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)

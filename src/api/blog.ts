@@ -41,3 +41,17 @@ export const createBlog = async (data: BlogFormProps): Promise<blog> => {
         throw err;
     }
 }
+
+//edit
+export const editBlog = async (id: string, blogData: Partial<blog>) => {
+    console.log("Edit Blog API - ID:", id);
+    console.log("Edit Blog API - Data:", JSON.stringify(blogData));
+    
+    try {
+      const response = await axios.put(`/api/blogs/${id}`, blogData);
+      return response.data;
+    } catch (error) {
+      console.error("Edit Blog API Error:", error);
+      throw error;
+    }
+  };

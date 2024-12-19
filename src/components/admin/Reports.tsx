@@ -3,7 +3,6 @@ import { Table, TableHeader, TableBody, TableRow, TableCell } from "@nextui-org/
 import { Button, Pagination } from "@nextui-org/react"; // Removed Modal import
 import { useNavigate } from "react-router-dom";
 import { getReports } from "../../api/post";
-import { table } from "console";
 
 // Updated interfaces to match API response
 interface User {

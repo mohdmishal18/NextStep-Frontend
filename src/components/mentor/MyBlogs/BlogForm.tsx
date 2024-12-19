@@ -9,6 +9,8 @@ import { getAllSkills } from "@/api/admin";
 import { Skills } from "@/Types/adminTypes";
 
 const BlogForm: React.FC<BlogFormProps> = ({ initialData = {}, onSubmit }) => {
+
+  console.log(initialData, "initial data");
   const {
     register,
     handleSubmit,
@@ -20,7 +22,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ initialData = {}, onSubmit }) => {
       title: initialData.title || "",
       content: initialData.content || "",
       coverImage: initialData.coverImage || "",
-      tags: initialData.tags || [],
+      tags: initialData.tags?.map((tag: any) => tag._id) || [],
       isPublished: initialData.isPublished || false,
     },
     shouldFocusError: false,
@@ -31,18 +33,24 @@ const BlogForm: React.FC<BlogFormProps> = ({ initialData = {}, onSubmit }) => {
   const [filteredSkills, setFilteredSkills] = useState<Skills[]>([]);
   const [selectedSkills, setSelectedSkills] = useState<Skills[]>([]);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [previewImage, setPreviewImage] = useState<string>("");
+  const [previewImage, setPreviewImage] = useState<string>(initialData.coverImage || "");
 
   useEffect(() => {
     const fetchSkills = async () => {
       try {
         const response = await getAllSkills();
-        console.log(response.data.skills);
-        // Filter skills that are listed (you can modify this condition as needed)
         const listedSkills = response.data.skills.filter(
           (skill: Skills) => skill.isListed
         );
         setSkills(listedSkills);
+
+        // Populate selectedSkills from initial data
+        if (initialData.tags && initialData.tags.length > 0) {
+          const selectedSkillsData = initialData.tags
+            .map((tag: any) => listedSkills.find((skill) => skill._id === tag._id))
+            .filter(Boolean) as Skills[];
+          setSelectedSkills(selectedSkillsData);
+        }
       } catch (error) {
         console.error("Failed to fetch skills:", error);
       }
@@ -51,9 +59,9 @@ const BlogForm: React.FC<BlogFormProps> = ({ initialData = {}, onSubmit }) => {
     fetchSkills();
   }, []);
 
+
   useEffect(() => {
     if (inputValue) {
-      // Filter skills that match input and are not already selected
       const filtered = skills.filter(
         (skill) =>
           skill.name.toLowerCase().includes(inputValue.toLowerCase()) &&
@@ -75,30 +83,27 @@ const BlogForm: React.FC<BlogFormProps> = ({ initialData = {}, onSubmit }) => {
       if (selectedImage) {
         coverImage = await uploadImageToCloudinary(selectedImage);
       }
-      // Prepare final form data
       const finalData = {
         ...data,
         coverImage,
-        tags: selectedSkills.map((skill) => skill._id), // Use skill IDs as tags
+        tags: selectedSkills.map((skill) => skill._id),
       };
 
-      console.log("Final Form Data:", finalData); // Log the data
+      console.log("Final Form Data:", finalData);
 
-      onSubmit(finalData); // Pass the final data to the onSubmit handler
+      onSubmit(finalData);
     } catch (error) {
       console.error("Image upload failed:", error);
     }
   };
 
   const handleSkillSelect = (skill: Skills) => {
-    // Add selected skill to the list
     setSelectedSkills([...selectedSkills, skill]);
     setInputValue(""); // Clear input after selection
     setFilteredSkills([]); // Clear filtered skills
   };
 
   const handleRemoveSkill = (skillId: string) => {
-    // Remove skill from selected skills
     setSelectedSkills(selectedSkills.filter((skill) => skill._id !== skillId));
   };
 
@@ -173,6 +178,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ initialData = {}, onSubmit }) => {
         )}
 
         {/* Selected Skills Tags */}
+        {/* Selected Skills Tags */}
         <div className="flex flex-wrap gap-2 mt-2">
           {selectedSkills.map((skill) => (
             <div
@@ -191,8 +197,6 @@ const BlogForm: React.FC<BlogFormProps> = ({ initialData = {}, onSubmit }) => {
           ))}
         </div>
       </div>
-
-      {/* Rest of the form remains the same */}
       {/* Content Editor */}
       <div>
         <Controller
@@ -219,7 +223,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ initialData = {}, onSubmit }) => {
                     "bold italic | quicklink h2 h3 blockquote quickimage quicktable",
                   toolbar_mode: "sliding",
                   setup: (editor) => {
-                    editorRef = editor; // Store the editor instance in a variable
+                    editorRef = editor;
                   },
                 }}
                 value={field.value} // Bind the value to the editor

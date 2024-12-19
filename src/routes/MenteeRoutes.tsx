@@ -13,6 +13,7 @@ import ProfilePage from '../pages/mentee/ProfilePagee';
 import SearchPage from '../pages/mentee/SearchPage';
 import MyPostsPage from '../pages/mentee/MyPostsPage';
 import MenteeProfilePage from '../pages/common/MenteeProfile';
+import MentorProfilePage from '@/pages/mentee/MentorProfilePage';
 
 const MenteeRoutes = () => {
   return (
@@ -21,6 +22,7 @@ const MenteeRoutes = () => {
         <Route index element={<DashboardPage />} />
         <Route path='myfeed/:postId?' element={<MyFeedPage/>}/>
         <Route path='search' element={<SearchPage/>}/>
+        <Route path='/mentor/:id' element={<MentorProfilePage/>}/>
         <Route path='user-mentee/:id' element={<MenteeProfilePage/>}/>
         <Route path="account" element={<ProfileContent/>}>
           <Route index element={<ProfilePage/>}/>

@@ -110,6 +110,16 @@ export const getApprovedMentors = async () => {
   }
 }
 
+export const getMentorById = async () => {
+  try {
+    return await API.get(adminRoutes.GetMentorById)
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err;
+  }
+}
+
 // approve mentor
 export const approveMentor = async (id: string, status: string) => {
   try {

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchBlog, createBlog, fetchBlogById } from "@/api/blog";
+import { fetchBlog, createBlog, fetchBlogById, editBlog } from "@/api/blog";
 import { blog } from "@/Types/blogTypes";
 import { BlogFormProps } from "@/Types/blogTypes";
 
@@ -25,5 +25,22 @@ export const useBlogById = (id?: string) => {
     queryKey: ['blog', id],
     queryFn: () => fetchBlogById(id!),
     enabled: !!id
+  });
+};
+
+export const useEditBlog = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, blogData }: { id: string; blogData: Partial<blog> }) => {
+      console.log("Mutation Fn - Blog Data:", blogData);
+      return await editBlog(id, blogData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] });
+    },
+    onError: (error) => {
+      console.error("Edit Blog Mutation Error:", error);
+    }
   });
 };

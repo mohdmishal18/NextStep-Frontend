@@ -12,7 +12,6 @@ export interface blog {
 }
 
 export interface BlogFormProps {
-    initialData?: Partial<blog>;
-    onSubmit: (data: Omit<blog, "_id" | "authorId" | "createdAt" | "updatedAt">) => void;
-  }
-  
+  initialData?: Partial<blog>;
+  onSubmit: (data: Omit<blog, "_id" | "authorId" | "createdAt" | "updatedAt">) => void;
+}

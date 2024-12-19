@@ -19,7 +19,8 @@ const adminRoutes = {
     getApplications: '/admin/all-applications',
     approve: '/admin/approve-mentor',
     reject: '/admin/reject-mentor',
-    getApproved: '/admin/approved-mentors'
+    getApproved: '/admin/approved-mentors',
+    GetMentorById: "/admin/getMentorById"
 
 }
 

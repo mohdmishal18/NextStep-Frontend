@@ -40,6 +40,17 @@ export const logout = async () => {
   }
 };
 
+export const getMentorById = async (id: string) => {
+  try {
+    return await API.post(`${mentorRoutes.getMentorById}/${id}`);
+  } catch (error) {
+    const err: Error = error as Error;
+    errorHandle(err);
+    throw err; // Re-throw the error after handling it
+  }
+};
+
+
 
 // Google login
 export const googleAuthLogin = async (name: string, email: string, image: string) => {

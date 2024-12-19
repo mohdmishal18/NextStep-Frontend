@@ -4,5 +4,6 @@ export const mentorRoutes = {
     googleAuth: "/mentor/google-login",
     logout: '/mentor/logout',
     EditPictures: '/mentor/edit-picture',
-    EditDetails: '/mentor/edit-details'
+    EditDetails: '/mentor/edit-details',
+    getMentorById: '/mentor'
 }
