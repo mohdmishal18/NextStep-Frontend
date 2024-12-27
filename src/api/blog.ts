@@ -48,7 +48,7 @@ export const editBlog = async (id: string, blogData: Partial<blog>) => {
     console.log("Edit Blog API - Data:", JSON.stringify(blogData));
     
     try {
-      const response = await axios.put(`/api/blogs/${id}`, blogData);
+      const response = await API.put(`${blogRoutes.editBlog}/${id}`, blogData);
       return response.data;
     } catch (error) {
       console.error("Edit Blog API Error:", error);
