@@ -20,3 +20,14 @@ export interface MenteeProfile {
     coverPicture?: string;
     __v: number;
 }
+
+export interface SearchMenteeFilters {
+    name: string;
+    page?: number;
+    limit?: number;
+  }
+  
+  export interface SearchMenteeResult {
+    mentees: any[];
+    total: number;
+  }

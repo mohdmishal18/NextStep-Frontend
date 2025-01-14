@@ -8,6 +8,7 @@ export const postRoutes = {
     UnLikePost: 'posts/unlike-post',
     ReportPost:'posts/report',
     GetReports: 'posts/report',
-    HidePost: 'posts/hide-post'
+    HidePost: 'posts/hide-post',
+    SearchPosts: 'posts/'
     
 }

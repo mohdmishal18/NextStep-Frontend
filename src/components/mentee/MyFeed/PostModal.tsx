@@ -2,11 +2,47 @@ import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import { createComment, getComment, editComment, deleteComment } from '../../../api/comment';
-import { reportPost } from '../../../api/post';
+import { reportPost, UnLikePost, likePost } from '../../../api/post';
 import { useSelector } from 'react-redux';
 import { rootState } from '../../../store/store';
 import { MenteeProfile } from '../../../Types/menteeTypes';
-import { UnLikePost, likePost } from '../../../api/post';
+import { 
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Card,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { 
+  ThumbsUp,
+  Share2,
+  Flag,
+  MoreVertical,
+  Send,
+  Edit2,
+  Trash2,
+} from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Comment {
   _id: string;
@@ -54,6 +90,15 @@ const PostModal: React.FC<ModalProps> = ({ post, closeModal }) => {
   const mentee: MenteeProfile | null = useSelector(
     (state: rootState) => state.mentee.menteeData
   );
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word[0])
+      .join('')
+      .toUpperCase();
+  };
+
 
   const reportReasons = [
     'Spam',
@@ -183,114 +228,185 @@ const PostModal: React.FC<ModalProps> = ({ post, closeModal }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-hidden">
-      <div
-        className="bg-primary rounded-lg w-11/12 md:w-2/3 lg:w-1/2 p-4 max-h-[80vh] overflow-y-scroll"
-        style={{
-          WebkitOverflowScrolling: 'touch',
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
-        }}
-      >
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg text-white font-bold">{post.title}</h2>
-          <button onClick={closeModal} className="text-gray-700 text-2xl hover:text-gray-900">&times;</button>
-        </div>
-        <div className="flex items-start border-b pb-4 mb-4">
-          <img src={post.userid.profilePicture} alt={post.userid.name} className="w-12 h-12 rounded-full mr-4" />
-          <div>
-            <div className="font-bold text-white text-lg">{post.userid.name}</div>
-            <div className="text-gray-500 text-sm">{moment(post.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</div>
-            <div className="flex text-slate-400 gap-2 mt-2">
-              {post.tags.map((tag) => (
-                <span key={tag._id} className="text-blue-500 text-xs">{tag.name}</span>
-              ))}
+    <Dialog open={true} onOpenChange={closeModal}>
+      <DialogContent className="max-w-3xl h-[90vh] flex flex-col">
+        <DialogHeader>
+          <div className="flex items-center gap-4">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={post.userid.profilePicture} alt={post.userid.name} />
+              <AvatarFallback>{getInitials(post.userid.name)}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+              <DialogTitle className="mb-1">{post.userid.name}</DialogTitle>
+              <div className="text-sm text-muted-foreground">
+                {moment(post.createdAt).format('MMMM Do YYYY, h:mm a')}
+              </div>
             </div>
           </div>
-        </div>
-        <img src={post.image} alt={post.title} className="w-full h-auto object-cover mb-4" />
-        <p className="text-sm text-white mb-4">{post.content}</p>
-        <div className="flex items-center mb-4">
-          <button
-            onClick={handleLikeToggle}
-            className={`px-4 py-2 rounded ${isLiked ? 'bg-red-500' : 'bg-blue-600'} text-white hover:bg-blue-700`}
-          >
-            {isLiked ? 'Unlike' : 'Like'} ({likes})
-          </button>
-          <button
-            onClick={handleShare}
-            className="ml-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-          >
-            Share
-          </button>
-          <button
-            onClick={() => setShowReportReasons(true)}
-            className="ml-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-          >
-            Report
-          </button>
-        </div>
+        </DialogHeader>
 
-        {showReportReasons && (
-          <div className="mt-4 bg-zinc-800 p-4 rounded">
-            <p className="text-white">Select a reason to report this post:</p>
-            <ul className="mt-2">
-              {reportReasons.map((reason) => (
-                <li key={reason} className="flex items-center">
-                  <input
-                    type="radio"
-                    id={reason}
-                    name="reportReason"
-                    value={reason}
-                    onChange={(e) => setReportReason(e.target.value)}
-                    className="mr-2"
+        <ScrollArea className="flex-1">
+          <div className="space-y-4 p-1">
+            {/* Post Content */}
+            <div>
+              <h2 className="text-xl font-semibold mb-2">{post.title}</h2>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {post.tags.map((tag) => (
+                  <Badge key={tag._id} variant="secondary">
+                    {tag.name}
+                  </Badge>
+                ))}
+              </div>
+              {post.image && (
+                <div className="relative w-full h-[300px] rounded-md overflow-hidden mb-4">
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
-                  <label htmlFor={reason} className="text-white">{reason}</label>
-                </li>
-              ))}
-            </ul>
-            <button onClick={handleReportPost} className="mt-4 bg-blue-600 text-white px-4 py-2 rounded">
-              Submit Report
-            </button>
+                </div>
+              )}
+              <p className="text-sm text-muted-foreground">{post.content}</p>
+            </div>
+
+            <Separator />
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-2">
+              <Button
+                variant={isLiked ? "default" : "outline"}
+                size="sm"
+                onClick={handleLikeToggle}
+                className="gap-2"
+              >
+                <ThumbsUp className="h-4 w-4" />
+                <span>{likes}</span>
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleShare}
+                className="gap-2"
+              >
+                <Share2 className="h-4 w-4" />
+                Share
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowReportReasons(true)}
+                className="gap-2"
+              >
+                <Flag className="h-4 w-4" />
+                Report
+              </Button>
+            </div>
+
+            {/* Report Dialog */}
+            {showReportReasons && (
+              <Card className="mt-4">
+                <CardContent className="pt-6">
+                  <h3 className="font-semibold mb-4">Report Post</h3>
+                  <RadioGroup onValueChange={setReportReason}>
+                    {reportReasons.map((reason) => (
+                      <div key={reason} className="flex items-center space-x-2">
+                        <RadioGroupItem value={reason} id={reason} />
+                        <Label htmlFor={reason}>{reason}</Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </CardContent>
+                <CardFooter>
+                  <Button onClick={handleReportPost} className="w-full">
+                    Submit Report
+                  </Button>
+                </CardFooter>
+              </Card>
+            )}
+
+            <Separator />
+
+            {/* Comments Section */}
+            <div className="space-y-4">
+              <h3 className="font-semibold">Comments</h3>
+              
+              <div className="flex items-center gap-2">
+                <Input
+                  placeholder="Add a comment..."
+                  value={comment}
+                  onChange={handleCommentChange}
+                />
+                <Button size="icon" onClick={handleCommentSubmit}>
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+
+              <div className="space-y-4">
+                {comments.length > 0 ? (
+                  comments.map((comment) => (
+                    <Card key={comment._id}>
+                      <CardContent className="pt-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex gap-3">
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage src={comment.user[0].profilePicture} alt={comment.user[0].name} />
+                              <AvatarFallback>{getInitials(comment.user[0].name)}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="font-medium text-sm">{comment.user[0].name}</p>
+                              {editingCommentId === comment._id ? (
+                                <div className="flex gap-2 mt-1">
+                                  <Input
+                                    value={editCommentContent}
+                                    onChange={(e) => setEditCommentContent(e.target.value)}
+                                  />
+                                  <Button size="sm" onClick={handleEditCommentSubmit}>
+                                    Save
+                                  </Button>
+                                </div>
+                              ) : (
+                                <>
+                                  <p className="text-sm text-muted-foreground">{comment.content}</p>
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    {moment(comment.createdAt).fromNow()}
+                                  </p>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => handleEditComment(comment._id, comment.content)}>
+                                <Edit2 className="h-4 w-4 mr-2" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem 
+                                onClick={() => handleDeleteComment(comment._id)}
+                                className="text-destructive"
+                              >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center">No comments yet.</p>
+                )}
+              </div>
+            </div>
           </div>
-        )}
-
-        <div className="mt-4">
-          <h3 className="text-white font-bold">Comments</h3>
-          <input
-            type="text"
-            value={comment}
-            onChange={handleCommentChange}
-            className="w-full p-2 border border-gray-300 rounded mb-2"
-            placeholder="Add a comment..."
-          />
-          <button onClick={handleCommentSubmit} className="bg-blue-600 text-white px-4 py-2 rounded">Submit</button>
-
-          {comments.length > 0 ? (
-            <ul className="mt-4">
-              {comments.map((comment) => (
-                <li key={comment._id} className="flex items-center justify-between mb-2">
-                  <div className="flex items-center">
-                    <img src={comment.user[0].profilePicture} alt={comment.user[0].name} className="w-8 h-8 rounded-full mr-2" />
-                    <div>
-                      <span className="font-bold text-white">{comment.user[0].name}</span>
-                      <p className="text-gray-300">{comment.content}</p>
-                      <span className="text-gray-500 text-xs">{moment(comment.createdAt).fromNow()}</span>
-                    </div>
-                  </div>
-                  <div>
-                    <button onClick={() => handleEditComment(comment._id, comment.content)} className="text-blue-500 mr-2">Edit</button>
-                    <button onClick={() => handleDeleteComment(comment._id)} className="text-red-500">Delete</button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-500">No comments yet.</p>
-          )}
-        </div>
-      </div>
-    </div>
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
   );
 };
 

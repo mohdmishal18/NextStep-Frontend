@@ -53,3 +53,34 @@ export interface MentorApplicationData {
     whyBecomeMentor?: string;
     greatestAchievement?: string;
 }
+
+export interface SearchFilters {
+    search?: string;
+    skills?: string[];
+    jobTitle?: string;
+    company?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    page?: number;
+    limit?: number;
+}
+
+export interface SearchResult {
+    mentors: Array<{
+      id: string;
+      firstName: string;
+      lastName: string;
+      jobTitle: string;
+      company: string;
+      location: string;
+      skills: Array<{ id: string; name: string }>;
+      profilePicture: string | null;
+      rating: number;
+      subscriptions: Array<{
+        type: string;
+        price: number;
+      }>;
+    }>;
+    total: number;
+}
+  

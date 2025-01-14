@@ -5,3 +5,16 @@ export interface postForm {
     tags: string[]
     content: string;
 }
+
+export interface SearchPostFilters {
+    title: string;
+    page?: number;
+    limit?: number;
+  }
+  
+  export interface SearchPostResult {
+    posts: any[];
+    total: number;
+  }
+    
+    

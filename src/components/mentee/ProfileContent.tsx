@@ -1,44 +1,83 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { Outlet } from "react-router-dom";
-// import Interests from "./Interests";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { UserCircle, FileText } from "lucide-react";
+
 const ProfileContent: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentPath = location.pathname;
+
+  const routes = [
+    {
+      label: "My Profile",
+      path: "/mentee/account",
+      icon: <UserCircle className="h-5 w-5" />
+    },
+    {
+      label: "My Posts",
+      path: "/mentee/account/myposts",
+      icon: <FileText className="h-5 w-5" />
+    }
+  ];
+
   return (
-    <main className="mt-20 max-md:mt-10 max-md:mr-1 max-md:max-w-full">
+    <main className="mt-20 container max-md:mt-10">
       <div className="flex gap-5 max-md:flex-col">
-        <nav className="flex flex-col w-[22%] max-md:ml-0 max-md:w-full">
-          <div className="flex flex-col max-md:mt-3.5">
-            <h1 className="text-4xl text-white">Profile</h1>
-            <div className="flex flex-col pt-px pb-2 mt-11 w-full bg-zinc-900 max-md:mt-10">
-              <button className="flex gap-1 px-4 py-2 bg-blue-600 rounded-xl">
-                <img
-                  loading="lazy"
-                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/064562b678857e97aa1891a2da4b4379e06ed063d99ab2648e83ce1c3940753d?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be"
-                  alt=""
-                  className="aspect-square w-[30px]"
-                />
-                <Link to="/mentee/account" className="flex-auto text-white text-xl">
-                    My Profile
-                  </Link>
-              </button>
-              <div className="flex flex-col px-7 mt-3.5 max-md:px-5">
-                <button className="flex gap-2.5 text-xl text-white">
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/3bfc6d69efaa4377e131e4e38408633a3a9bf1a54237203f2f4afeed86cd446f?apiKey=989d0fe6dce947e78429c931599938be&&apiKey=989d0fe6dce947e78429c931599938be"
-                    alt=""
-                    className="shrink-0 aspect-square w-[30px]"
-                  />
-                  {/* <span className="flex-auto">My Posts</span> */}
-                  <Link to="/mentee/account/myposts" className="flex-auto text-white">
-                    My Posts
-                  </Link>
-                </button>
-              </div>
-            </div>
+        {/* Desktop Navigation - Sticky Sidebar */}
+        <nav className="hidden md:flex flex-col w-[22%] sticky top-20 h-fit">
+          <h1 className="text-4xl text-gray-900 font-semibold mb-8">Profile</h1>
+          <div className="flex flex-col space-y-2 bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm">
+            {routes.map((route) => (
+              <Button
+                key={route.path}
+                variant={currentPath === route.path ? "default" : "ghost"}
+                className={cn(
+                  "w-full justify-start",
+                  currentPath === route.path
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                    : "hover:bg-gray-100"
+                )}
+                asChild
+              >
+                <Link to={route.path}>
+                  {route.icon}
+                  <span className="ml-2">{route.label}</span>
+                </Link>
+              </Button>
+            ))}
           </div>
         </nav>
-        <div className="flex flex-col mr-3 w-[78%] max-md:ml-0 max-md:w-full overflow-y-auto h-full">
+
+        {/* Mobile Navigation - Horizontal Tabs */}
+        <div className="md:hidden w-full mb-6">
+          <h1 className="text-3xl text-gray-900 font-semibold mb-4">Profile</h1>
+          <Tabs
+            defaultValue={currentPath}
+            className="w-full"
+            onValueChange={(value) => navigate(value)}
+          >
+            <TabsList className="w-full bg-gray-50 border border-gray-200">
+              {routes.map((route) => (
+                <TabsTrigger
+                  key={route.path}
+                  value={route.path}
+                  className="flex-1 data-[state=active]:bg-white data-[state=active]:text-primary"
+                >
+                  <span className="flex items-center">
+                    {route.icon}
+                    <span className="ml-2">{route.label}</span>
+                  </span>
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        </div>
+
+        {/* Main Content Area */}
+        <div className="flex-1 md:w-[78%] overflow-y-auto">
           <Outlet />
         </div>
       </div>

@@ -26,3 +26,26 @@ export const createSubscription = async (data: SubscriptionFormProps): Promise<S
         throw err;
     }
 }
+
+export const editSubscription = async (id: string,data: Partial<SubscriptionFormProps>): Promise<Subscription> => {
+    try {
+        const response = await API.put(`${subscriptionRoutes.editSubscription}/${id}`, data)
+        console.log(id, data,"edit subscription")
+        return response.data
+    } catch (error) {
+        const err = error as AxiosError; 
+        errorHandle(err);
+        throw err;
+    }
+}
+
+export const deleteSubscription = async (id: string): Promise<Subscription> => {
+    try {
+        const response = await API.delete(`${subscriptionRoutes.deleteSubscription}/${id}`)
+        return response.data
+    } catch (error) {
+        const err = error as AxiosError; 
+        errorHandle(err);
+        throw err;
+    }
+}

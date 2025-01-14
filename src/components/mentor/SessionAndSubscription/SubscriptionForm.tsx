@@ -3,20 +3,20 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Input, Button
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { SubscriptionFormProps } from "@/Types/SubscriptionTypes";
 
-// Define your schema with validation using yup
 const validationSchema = yup.object({
   type: yup.string().oneOf(["lite", "standard", "pro"]).required("Subscription Type is required"),
   price: yup.number().positive("Price must be greater than 0").required("Price is required"),
   duration: yup.number().min(1, "Duration must be at least 1 month").required("Duration is required"),
   features: yup.object({
     audioCalls: yup.object({
-      callsPerMonth: yup.number().min(1, "Audio Calls Per Month must be at least 1").required("Audio Calls Per Month is required"),
-      callDuration: yup.number().min(1, "Call Duration must be at least 1 minute").required("Audio Call Duration is required"),
+      callsPerMonth: yup.number().min(1).required("Audio Calls Per Month is required"),
+      callDuration: yup.number().min(1).required("Audio Call Duration is required"),
     }),
     videoCalls: yup.object({
-      callsPerMonth: yup.number().min(1, "Video Calls Per Month must be at least 1").required("Video Calls Per Month is required"),
-      callDuration: yup.number().min(1, "Video Call Duration must be at least 1 minute").required("Video Call Duration is required"),
+      callsPerMonth: yup.number().min(1).required("Video Calls Per Month is required"),
+      callDuration: yup.number().min(1).required("Video Call Duration is required"),
     }),
     chatAccess: yup.boolean(),
     blogAccess: yup.boolean(),
@@ -24,45 +24,49 @@ const validationSchema = yup.object({
   })
 });
 
-const SubscriptionForm: React.FC<{ 
-  isOpen: boolean; 
-  onClose: () => void; 
-  onSubmit: (data: any) => void 
-}> = ({ isOpen, onClose, onSubmit }) => {
-  const defaultValues = {
-    type: "lite",
-    price: 0,
-    duration: 1,
-    features: {
-      audioCalls: {
-        callsPerMonth: 2,
-        callDuration: 30,
-      },
-      videoCalls: {
-        callsPerMonth: 1,
-        callDuration: 15,
-      },
-      chatAccess: false,
-      chatResponseTime: "24 hours",
-      blogAccess: false,
-    },
-  };
+interface SubscriptionFormComponentProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (data: Partial<SubscriptionFormProps>) => void;
+  defaultValues?: Partial<SubscriptionFormProps>;
+}
 
-  const { control, handleSubmit, formState: { errors } } = useForm({
-    defaultValues,
+const SubscriptionForm: React.FC<SubscriptionFormComponentProps> = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  defaultValues
+}) => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: defaultValues || {
+      type: '',
+      price: 0,
+      duration: 1,
+      features: {
+        audioCalls: { callsPerMonth: 0, callDuration: 0 },
+        videoCalls: { callsPerMonth: 0, callDuration: 0 },
+        chatAccess: false,
+        blogAccess: false,
+        chatResponseTime: '24 hours'
+      }
+    },
     resolver: yupResolver(validationSchema),
   });
 
-  const onSubmitHandler: SubmitHandler<any> = (data) => {
-    onSubmit(data);
-    onClose();
+  const onSubmitHandler: SubmitHandler<SubscriptionFormProps> = (data) => {
+    const cleanedData = JSON.parse(JSON.stringify(data));
+    onSubmit(cleanedData);
   };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="2xl">
       <ModalContent>
         <ModalHeader>
-          <h3>Create Subscription</h3>
+          <h3>{defaultValues ? "Edit Subscription" : "Create Subscription"}</h3>
         </ModalHeader>
         <ModalBody>
           <div className="grid grid-cols-2 gap-4">
@@ -222,7 +226,7 @@ const SubscriptionForm: React.FC<{
             Cancel
           </Button>
           <Button color="primary" onPress={handleSubmit(onSubmitHandler)}>
-            Create
+            {defaultValues ? "Update" : "Create"}
           </Button>
         </ModalFooter>
       </ModalContent>

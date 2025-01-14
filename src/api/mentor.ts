@@ -42,7 +42,7 @@ export const logout = async () => {
 
 export const getMentorById = async (id: string) => {
   try {
-    return await API.post(`${mentorRoutes.getMentorById}/${id}`);
+    return await API.get(`${mentorRoutes.getMentorById}/${id}`);
   } catch (error) {
     const err: Error = error as Error;
     errorHandle(err);

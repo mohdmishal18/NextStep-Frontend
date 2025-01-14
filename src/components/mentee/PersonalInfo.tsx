@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
-import { menteeLogin } from '../../store/slices/menteeAuthSlice';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useSelector, useDispatch } from 'react-redux';
+import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-
+import { menteeLogin } from '../../store/slices/menteeAuthSlice';
 import { MenteeProfile } from '../../Types/menteeTypes';
 import { rootState } from '../../store/store';
 import { editDetails } from '../../api/mentee';
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 interface PersonalInfoForm {
   fullName: string;
@@ -18,13 +21,15 @@ interface PersonalInfoForm {
 }
 
 const PersonalInfo: React.FC = () => {
-  const mentee: MenteeProfile | null = useSelector(
-    (state: rootState) => state.mentee.menteeData
-  );
+  const mentee = useSelector((state: rootState) => state.mentee.menteeData);
+  const dispatch = useDispatch();
 
-  const dispatch = useDispatch()
-
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<PersonalInfoForm>();
+  const { 
+    register, 
+    handleSubmit, 
+    setValue, 
+    formState: { errors } 
+  } = useForm<PersonalInfoForm>();
 
   useEffect(() => {
     if (mentee) {
@@ -43,103 +48,112 @@ const PersonalInfo: React.FC = () => {
     return true;
   };
 
-  const onSubmit: SubmitHandler<PersonalInfoForm> = async (data) => {
-
+  const onSubmit = async (data: PersonalInfoForm) => {
     try {
-      const name = data.fullName
-      const phone = data.phone
-      const bio = data.bio
-      const education = data.education
-      const email = mentee?.email!
-
       const response = await editDetails(
-        name,
-        phone,
-        bio,
-        education,
-        email
-      )
-
-      console.log(response, "res from edit mentee details")
+        data.fullName,
+        data.phone,
+        data.bio,
+        data.education,
+        mentee?.email!
+      );
       
-      if (response && response.status && response.user) {
+      if (response?.status && response?.user) {
         dispatch(menteeLogin(response.user));
-        toast.success("profile updated successfully")
+        toast.success("Profile updated successfully");
       } else {
-        toast.error("Failed to update profile. Please try again.");
+        toast.error("Failed to update profile");
       }
     } catch (error) {
-      // Handle the error
-      console.error("Error uploading images", error);
-      toast.error("An error occurred while uploading images.");
+      console.error("Error updating profile:", error);
+      toast.error("An error occurred while updating profile");
     }
   };
 
   return (
-    <section className="flex flex-col items-start pt-3 pr-3 pb-14 pl-6 mt-24 rounded-xl bg-zinc-800 max-md:pl-5 max-md:mt-10 max-md:max-w-full">
-      <div className="flex flex-col max-w-full w-full">
-        <h2 className="text-2xl text-white mb-6">Personal Information</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col w-full">
-          <div className="flex flex-col sm:flex-row justify-between w-full">
-            <div className="flex flex-col w-full sm:w-1/2 mb-6 sm:mb-0 pr-3">
-              <h3 className="text-lg text-zinc-500">Full Name</h3>
-              <input
-                type="text"
-                {...register("fullName", { required: "Full Name is required" })}
-                className="mt-3 text-2xl font-light text-white bg-transparent border border-zinc-600 rounded-lg p-2"
+    <Card className="mt-8">
+      <CardHeader>
+        <CardTitle>Personal Information</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="fullName">Full Name</Label>
+              <Input
+                id="fullName"
+                {...register("fullName", { 
+                  required: "Full name is required" 
+                })}
+                className={errors.fullName ? "border-red-500" : ""}
               />
-              {errors.fullName && <p className="text-red-500">{errors.fullName.message}</p>}
+              {errors.fullName && (
+                <p className="text-sm text-red-500">{errors.fullName.message}</p>
+              )}
             </div>
-            <div className="flex flex-col w-full sm:w-1/2 mb-6 sm:mb-0 pl-3">
-              <h3 className="text-lg text-zinc-500">Email Address</h3>
-              <input
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Address</Label>
+              <Input
+                id="email"
                 type="email"
                 value={mentee?.email}
                 disabled
-                className="mt-3 text-2xl font-light text-white bg-transparent border border-zinc-600 rounded-lg p-2 cursor-not-allowed"
+                className="bg-gray-100"
               />
             </div>
-          </div>
-          <div className="flex flex-col sm:flex-row justify-between w-full">
-            <div className="flex flex-col w-full sm:w-1/2 mb-6 sm:mb-0 pr-3">
-              <h3 className="text-lg text-zinc-500">Phone No</h3>
-              <input
-                type="tel"
+
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input
+                id="phone"
                 {...register("phone", {
-                  required: "Mobile number is required",
                   validate: validateMobileNumber
                 })}
-                className="mt-2 text-2xl font-light text-white bg-transparent border border-zinc-600 rounded-lg p-2"
+                className={errors.phone ? "border-red-500" : ""}
               />
-              {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}
+              {errors.phone && (
+                <p className="text-sm text-red-500">{errors.phone.message}</p>
+              )}
             </div>
-            <div className="flex flex-col w-full sm:w-1/2 mb-6 sm:mb-0 pl-3">
-              <h3 className="text-lg text-zinc-500">Education</h3>
-              <input
-                type="text"
-                {...register("education", { required: "Education is required" })}
-                className="mt-3 text-2xl font-light text-white bg-transparent border border-zinc-600 rounded-lg p-2"
+
+            <div className="space-y-2">
+              <Label htmlFor="education">Education</Label>
+              <Input
+                id="education"
+                {...register("education", { 
+                  required: "Education is required" 
+                })}
+                className={errors.education ? "border-red-500" : ""}
               />
-              {errors.education && <p className="text-red-500">{errors.education.message}</p>}
+              {errors.education && (
+                <p className="text-sm text-red-500">{errors.education.message}</p>
+              )}
             </div>
           </div>
-          <div className="flex flex-col w-full mb-6">
-            <h3 className="text-lg text-zinc-500">Bio</h3>
-            <textarea
-              {...register("bio", { required: "Bio is required" })}
-              className="mt-4 text-2xl font-light leading-7 text-white bg-transparent border border-zinc-600 rounded-lg p-2"
-              rows={4}
+
+          <div className="space-y-2">
+            <Label htmlFor="bio">Bio</Label>
+            <Textarea
+              id="bio"
+              {...register("bio", { 
+                required: "Bio is required" 
+              })}
+              className={`min-h-[120px] ${errors.bio ? "border-red-500" : ""}`}
             />
-            {errors.bio && <p className="text-red-500">{errors.bio.message}</p>}
+            {errors.bio && (
+              <p className="text-sm text-red-500">{errors.bio.message}</p>
+            )}
           </div>
-          <div className="flex self-end">
-            <button type="submit" className='bg-blue text-white p-2 w-24 rounded-md'>
-              Save
-            </button>
+
+          <div className="flex justify-end">
+            <Button type="submit">
+              Save Changes
+            </Button>
           </div>
         </form>
-      </div>
-    </section>
+      </CardContent>
+    </Card>
   );
 };
 

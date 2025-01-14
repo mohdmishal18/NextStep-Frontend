@@ -1,7 +1,10 @@
 import React from "react";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ThumbsUp, MessageCircle } from "lucide-react";
 import moment from "moment";
-import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 
 interface PostProps {
   post: {
@@ -21,60 +24,69 @@ interface PostProps {
 }
 
 const PostCard: React.FC<PostProps> = ({ post, openModal }) => {
-  // Ensure post properties are defined with default values
   const {
-    userid = { _id: '', name: 'Default Name', profilePicture: 'default-profile-pic-url' },
+    userid = { _id: '', name: 'Default Name', profilePicture: '' },
     title = 'Default Title',
     tags = [],
     createdAt = '',
-    image = 'default-image-url',
+    image = '',
   } = post;
 
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase();
+  };
+
   return (
-    <div
-      className="bg-secondary shadow-md rounded-2xl overflow-hidden cursor-pointer"
+    <Card 
+      className="w-full border rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-white"
       onClick={openModal}
     >
-      {/* Profile Picture and User Info */}
-      <div className="flex items-start p-4 border-b border-gray-700">
-        <img
-          src={userid.profilePicture}
-          alt={userid.name}
-          className="w-12 h-12 rounded-full mr-4"
-        />
-        <div>
-          <div className="font-bold text-lg text-white">{userid.name}</div>
-          <div className="text-white text-sm">{title}</div>
-          <div className="text-white text-xs">
-            {moment(createdAt).fromNow()}
-          </div>
-          <div className="flex gap-2 mt-2">
-            {tags.map((tag) => (
-              <span key={tag._id} className="text-slate-300 text-xs">
-                {tag.name}
-              </span>
-            ))}
+      <CardHeader className="p-4 border-b">
+        <div className="flex items-center space-x-4">
+          <Avatar className="h-10 w-10">
+            <AvatarImage src={userid.profilePicture} alt={userid.name} />
+            <AvatarFallback>{getInitials(userid.name)}</AvatarFallback>
+          </Avatar>
+          <div className="flex-1">
+            <h3 className="font-semibold text-sm text-gray-900">{userid.name}</h3>
+            <span className="text-xs text-gray-500">{moment(createdAt).fromNow()}</span>
           </div>
         </div>
-      </div>
-      {/* Post Image */}
-      <img
-        src={image}
-        alt={title}
-        className="w-full h-64 object-cover"
-      />
-      {/* Like and Comment Buttons */}
-      <div className="flex justify-between items-center p-4 border-t border-gray-700">
-        <button className="text-gray-300 hover:underline flex items-center">
-          <ThumbUpAltIcon className="mr-2" />
+      </CardHeader>
+
+      <CardContent className="p-4">
+        <h2 className="text-lg font-semibold text-gray-800 truncate mb-2">{title}</h2>
+        <div className="flex flex-wrap gap-2 mb-4">
+          {tags.map((tag) => (
+            <Badge key={tag._id} className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-md">
+              {tag.name}
+            </Badge>
+          ))}
+        </div>
+        <div className="relative w-full h-48 rounded-md overflow-hidden">
+          <img
+            src={image}
+            alt={title}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        </div>
+      </CardContent>
+
+      <CardFooter className="p-4 border-t flex justify-between">
+        <Button variant="ghost" size="sm" className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
+          <ThumbsUp className="h-4 w-4" />
           Like
-        </button>
-        <button className="text-gray-300 hover:underline flex items-center">
-          <ChatBubbleOutlineIcon className="mr-2" />
+        </Button>
+        <Button variant="ghost" size="sm" className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
+          <MessageCircle className="h-4 w-4" />
           Comment
-        </button>
-      </div>
-    </div>
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };
 
